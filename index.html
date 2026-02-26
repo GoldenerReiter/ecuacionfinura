@@ -353,6 +353,21 @@
                         Al horno manso a <span class="dyn-val" id="dyn-temp">110°C</span> por <strong>40 minutitos</strong> pa' que el THC despierte.
                         <span class="block text-[10px] text-[var(--color-danger)] mt-1 italic">*Atención: No apure el fuego. Si pasa los 160°C, quema el yuyo como yerba hervida.</span>
                     </div>
+
+                    <!-- El Reloj del Horno con Sonido -->
+                    <div class="mt-4 bg-[var(--color-bg-panel)] p-3 rounded-lg flex items-center justify-between shadow-inner border border-[var(--color-accent-gold)] border-opacity-50">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl text-[var(--color-text-panel)] opacity-80">⏳</span>
+                            <div>
+                                <span class="block text-[9px] text-[var(--color-text-panel)] opacity-60 uppercase tracking-widest">Reloj del Horno</span>
+                                <span class="text-xl font-bold text-[var(--color-accent-gold)] font-mono tracking-wider" id="timer-display">40:00</span>
+                            </div>
+                        </div>
+                        <button id="btn-timer" class="bg-[var(--color-accent-gold)] text-[#1E2B22] px-4 py-2 rounded font-bold text-[11px] uppercase tracking-wider hover:opacity-90 transition-all shadow-md">
+                            Iniciar
+                        </button>
+                    </div>
+
                 </div>
 
                 <!-- PASO 2: Infusión -->
@@ -612,19 +627,19 @@
 
     <!-- BOTTOM NAVIGATION (App Style) -->
     <nav class="bottom-nav w-full shrink-0 flex justify-around items-center px-2 py-2 pb-4 z-20">
-        <button class="nav-item active flex flex-col items-center gap-1 w-1/4 pt-1" data-target="0">
+        <button class="nav-item active flex flex-col items-center gap-1 w-1/4 pt-1 idx-btn" data-target="0">
             <div class="icon-bg w-10 h-8 rounded-full flex items-center justify-center text-xl bg-[var(--color-accent-gold)] text-[#1E2B22] shadow-sm">⚖️</div>
             <span class="text-[10px] font-semibold tracking-wide mt-0.5">Alambique</span>
         </button>
-        <button class="nav-item flex flex-col items-center gap-1 w-1/4 pt-1" data-target="1">
+        <button class="nav-item flex flex-col items-center gap-1 w-1/4 pt-1 idx-btn" data-target="1">
             <div class="icon-bg w-10 h-8 rounded-full flex items-center justify-center text-xl text-[var(--color-text-muted)]">🧉</div>
             <span class="text-[10px] font-semibold tracking-wide mt-0.5">El Fogón</span>
         </button>
-        <button class="nav-item flex flex-col items-center gap-1 w-1/4 pt-1" data-target="2">
+        <button class="nav-item flex flex-col items-center gap-1 w-1/4 pt-1 idx-btn" data-target="2">
             <div class="icon-bg w-10 h-8 rounded-full flex items-center justify-center text-xl text-[var(--color-text-muted)]">🌿</div>
             <span class="text-[10px] font-semibold tracking-wide mt-0.5">El Saber</span>
         </button>
-        <button class="nav-item flex flex-col items-center gap-1 w-1/4 pt-1" data-target="3">
+        <button class="nav-item flex flex-col items-center gap-1 w-1/4 pt-1 idx-btn" data-target="3">
             <div class="icon-bg w-10 h-8 rounded-full flex items-center justify-center text-xl text-[var(--color-text-muted)]">📜</div>
             <span class="text-[10px] font-semibold tracking-wide mt-0.5">Lore</span>
         </button>
@@ -637,7 +652,6 @@
         const themeBtn = document.getElementById('themeToggle');
         const htmlTag = document.documentElement;
 
-        // El tema se carga inicialmente en el <head> para evitar parpadeos
         function updateThemeIcon() {
             if (htmlTag.classList.contains('light-theme')) {
                 themeBtn.textContent = '🌙';
@@ -658,6 +672,104 @@
             }
             updateThemeIcon();
         });
+
+        /* -----------------------------------------------------------------
+           LÓGICA DEL SONIDO DE CAMPANA (WEB AUDIO API)
+        ----------------------------------------------------------------- */
+        function playAlarmSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                function playCampanita(time, freq) {
+                    const osc = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, time);
+                    
+                    gainNode.gain.setValueAtTime(0, time);
+                    gainNode.gain.linearRampToValueAtTime(0.8, time + 0.05);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, time + 1.5);
+                    
+                    osc.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    
+                    osc.start(time);
+                    osc.stop(time + 1.5);
+                }
+                
+                // Dos campanadas suaves
+                playCampanita(audioCtx.currentTime, 880); 
+                playCampanita(audioCtx.currentTime + 0.4, 880); 
+            } catch (e) {
+                console.log("El audio no está soportado en este navegador.");
+            }
+        }
+
+        /* -----------------------------------------------------------------
+           LÓGICA DEL RELOJ DEL HORNO (TEMPORIZADOR)
+        ----------------------------------------------------------------- */
+        let timerInterval;
+        let timeRemaining = 40 * 60; // 40 minutos en segundos
+        let isTimerRunning = false;
+        
+        const timerDisplay = document.getElementById('timer-display');
+        const btnTimer = document.getElementById('btn-timer');
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        btnTimer.addEventListener('click', () => {
+            if (isTimerRunning) {
+                // Pausar
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                btnTimer.textContent = 'Reanudar';
+                btnTimer.classList.remove('bg-[var(--color-danger)]', 'text-white');
+                btnTimer.classList.add('bg-[var(--color-accent-gold)]', 'text-[#1E2B22]');
+            } else {
+                // Iniciar o Reanudar
+                isTimerRunning = true;
+                btnTimer.textContent = 'Pausar';
+                btnTimer.classList.remove('bg-[var(--color-accent-gold)]', 'text-[#1E2B22]');
+                btnTimer.classList.add('bg-[var(--color-danger)]', 'text-white');
+                
+                timerInterval = setInterval(() => {
+                    if (timeRemaining > 0) {
+                        timeRemaining--;
+                        timerDisplay.textContent = formatTime(timeRemaining);
+                    } else {
+                        // Terminó
+                        clearInterval(timerInterval);
+                        isTimerRunning = false;
+                        btnTimer.textContent = '¡Pronto!';
+                        btnTimer.classList.remove('bg-[var(--color-danger)]', 'text-white');
+                        btnTimer.classList.add('bg-[#1E2B22]', 'text-[var(--color-accent-gold)]');
+                        
+                        // Sonido del alambique
+                        playAlarmSound();
+                        
+                        // Un pequeño delay para que el sonido empiece antes del alert bloqueante
+                        setTimeout(() => {
+                            alert("¡Atento paisano! Ya pasaron los 40 minutos. Saque esa asadera del horno antes de que se le evaporen los espíritus.");
+                        }, 100);
+                        
+                        // Reset automático después de avisar
+                        setTimeout(() => {
+                            timeRemaining = 40 * 60;
+                            timerDisplay.textContent = formatTime(timeRemaining);
+                            btnTimer.textContent = 'Iniciar';
+                            btnTimer.classList.remove('bg-[#1E2B22]', 'text-[var(--color-accent-gold)]');
+                            btnTimer.classList.add('bg-[var(--color-accent-gold)]', 'text-[#1E2B22]');
+                        }, 5000);
+                    }
+                }, 1000);
+            }
+        });
+
 
         /* -----------------------------------------------------------------
            LÓGICA DE NAVEGACIÓN (TABS Y SWIPE)
@@ -684,7 +796,6 @@
                     iconBg.classList.add('bg-[var(--color-accent-gold)]', 'shadow-sm');
                 } else {
                     btn.classList.remove('active');
-                    // Reset class para textos por si venía de un color estático
                     iconBg.classList.remove('text-[#1E2B22]', 'text-white');
                     iconBg.classList.add('text-[var(--color-text-muted)]');
                     iconBg.classList.remove('bg-[var(--color-accent-gold)]', 'shadow-sm');
@@ -713,7 +824,7 @@
             setTimeout(() => { isAnimating = false; }, 400);
         }
 
-        // Botón principal de la máquina
+        // Event listener seguro por ID
         const btnGoToRecipe = document.getElementById('btnGoToRecipe');
         if (btnGoToRecipe) {
             btnGoToRecipe.addEventListener('click', () => {
@@ -721,14 +832,13 @@
             });
         }
 
-        // Clics en la barra inferior
         navItems.forEach((btn) => {
             btn.addEventListener('click', () => {
                 switchTab(parseInt(btn.dataset.target));
             });
         });
 
-        // Lógica de Swipe táctil
+        // Swipe Logic
         let touchStartX = 0;
         let touchStartY = 0;
         const swipeZone = document.getElementById('swipe-zone');
@@ -881,7 +991,6 @@
 
             const dynVals = document.querySelectorAll('.dyn-val');
             dynVals.forEach(el => {
-                // Brillo especial dinámico que funciona en dark o light mode
                 el.style.backgroundColor = 'rgba(194, 168, 120, 0.4)';
                 setTimeout(() => { el.style.backgroundColor = 'rgba(194, 168, 120, 0.15)'; }, 300);
             });
