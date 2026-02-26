@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manual del Gaucho Botánico 2026 | Edición Refinada</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Manual del Gaucho Botánico 2026 | Edición App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -15,11 +15,11 @@
             --accent-green: #1E2B22;
         }
 
+        /* Bloqueo de scroll en body para App feel */
         body {
             font-family: 'Montserrat', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            overflow-x: hidden;
             background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
         }
 
@@ -27,7 +27,7 @@
             font-family: 'Cormorant Garamond', serif;
         }
 
-        /* Contenedor principal de las páginas */
+        /* Contenedor principal: Ocupa espacio restante, contenido interno scrollea */
         .wizard-container {
             display: grid;
             grid-template-columns: 1fr;
@@ -36,21 +36,21 @@
             max-width: 1100px;
             flex-grow: 1;
             margin: 0 auto;
-            align-items: start; /* Mejor para móviles, evita que se corte por arriba */
+            align-items: stretch; /* Permite que el hijo ocupe el alto */
+            min-height: 0; /* Clave para que Flexbox no rompa el contenedor en móviles */
             perspective: 1000px;
         }
 
-        @media (min-width: 768px) {
-            .wizard-container {
-                align-items: center; /* Centrado vertical en PC/Tablet */
-            }
-        }
-
+        /* Páginas scrolleables individuales */
         .step-page {
             grid-column: 1;
             grid-row: 1;
             width: 100%;
-            min-width: 0;
+            height: 100%; /* Ocupa el contenedor */
+            overflow-y: auto; /* Scroll individual */
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 2rem; /* Espacio para respirar al fondo */
             opacity: 0;
             visibility: hidden;
             transform: translateY(20px);
@@ -58,6 +58,11 @@
             pointer-events: none;
             z-index: 1;
         }
+
+        /* Scrollbar estilo App */
+        .step-page::-webkit-scrollbar { width: 5px; }
+        .step-page::-webkit-scrollbar-track { background: transparent; }
+        .step-page::-webkit-scrollbar-thumb { background-color: rgba(194, 168, 120, 0.5); border-radius: 10px; }
 
         .step-page.active {
             opacity: 1;
@@ -67,10 +72,10 @@
             z-index: 2;
         }
 
-        .step-page.from-left { transform: translateX(-30px); }
-        .step-page.from-right { transform: translateX(30px); }
-        .step-page.exit-left { transform: translateX(-30px); opacity: 0; visibility: hidden; }
-        .step-page.exit-right { transform: translateX(30px); opacity: 0; visibility: hidden; }
+        .step-page.from-left { transform: translateX(-40px); }
+        .step-page.from-right { transform: translateX(40px); }
+        .step-page.exit-left { transform: translateX(-40px); opacity: 0; visibility: hidden; }
+        .step-page.exit-right { transform: translateX(40px); opacity: 0; visibility: hidden; }
 
         /* Elementos UI Refinados */
         .btn-primary {
@@ -78,7 +83,7 @@
             color: white;
             transition: all 0.3s ease;
         }
-        .btn-primary:hover {
+        .btn-primary:active, .btn-primary:hover {
             background-color: var(--text-main);
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(30, 43, 34, 0.2);
@@ -90,7 +95,7 @@
             transition: all 0.3s ease;
             background-color: transparent;
         }
-        .btn-secondary:hover {
+        .btn-secondary:active, .btn-secondary:hover {
             background-color: var(--accent-gold);
             color: white;
         }
@@ -101,7 +106,7 @@
             box-shadow: 0 8px 30px -10px rgba(0,0,0,0.06);
         }
 
-        /* Tablas Refinadas Responsivas */
+        /* Tablas Refinadas */
         .elegant-table {
             width: 100%;
             border-collapse: collapse;
@@ -123,7 +128,7 @@
             color: var(--text-muted);
         }
         .elegant-table tr:last-child td { border-bottom: none; }
-
+        
         @media (min-width: 768px) {
             .elegant-table { font-size: 0.9rem; }
             .elegant-table th, .elegant-table td { padding: 1.25rem 0.75rem; }
@@ -155,13 +160,8 @@
 
         /* Calculadora App Styles */
         input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
-            -webkit-appearance: none; 
-            margin: 0; 
-        }
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
         
         .calc-profile-btn {
             border: 1px solid rgba(194, 168, 120, 0.4);
@@ -179,24 +179,25 @@
             color: var(--accent-green);
             border: 1px solid rgba(194, 168, 120, 0.4);
             transition: all 0.2s;
-            touch-action: manipulation; /* Optimizado para tap en móviles */
+            touch-action: manipulation;
         }
-        .qty-btn:hover {
+        .qty-btn:active {
             background: var(--accent-gold);
             color: white;
             border-color: var(--accent-gold);
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-between py-4 md:py-8 px-3 sm:px-8">
+<!-- h-[100dvh] asegura la altura perfecta en celulares sin que moleste la barra del navegador -->
+<body class="h-[100dvh] w-screen overflow-hidden flex flex-col items-center justify-between py-2 sm:py-6 px-2 sm:px-6 relative">
 
-    <!-- Header & Progress -->
-    <header class="w-full max-w-5xl flex flex-col items-center mb-2 md:mb-4">
-        <h1 class="serif-font text-xl md:text-3xl font-semibold tracking-wide text-[#1E2B22] mb-4 md:mb-6">
-            <span class="text-[#C2A878] italic mr-1 md:mr-2">El</span>Gaucho Botánico
+    <!-- Header & Progress Fijo -->
+    <header class="w-full max-w-5xl flex flex-col items-center shrink-0 mb-2 mt-2">
+        <h1 class="serif-font text-2xl md:text-3xl font-semibold tracking-wide text-[#1E2B22] mb-3">
+            <span class="text-[#C2A878] italic mr-1">El</span>Gaucho Botánico
         </h1>
         
-        <div class="w-full flex items-center justify-between text-[10px] md:text-xs font-semibold text-[#C2A878] uppercase tracking-widest mb-2">
+        <div class="w-full flex items-center justify-between text-[10px] md:text-xs font-semibold text-[#C2A878] uppercase tracking-widest mb-2 px-2">
             <span id="step-indicator">Prólogo</span>
             <span id="step-counter">1 / 6</span>
         </div>
@@ -205,58 +206,55 @@
         </div>
     </header>
 
-    <!-- MAIN WIZARD -->
-    <main class="wizard-container py-4 md:py-8">
+    <!-- MAIN WIZARD - Scrolleable internamente -->
+    <main class="wizard-container py-2" id="swipe-zone">
         
         <!-- PÁGINA 1: Prólogo -->
         <section class="step-page active" id="step-0" data-title="Prólogo">
-            <div class="text-center px-2 md:px-12">
-                <span class="text-[#C2A878] text-2xl md:text-4xl mb-2 md:mb-4 block serif-font italic">2026</span>
+            <div class="text-center px-2 md:px-12 py-2">
+                <span class="text-[#C2A878] text-2xl md:text-4xl mb-2 block serif-font italic">2026</span>
                 <h2 class="serif-font text-4xl sm:text-5xl md:text-7xl text-[#1E2B22] mb-6 md:mb-10 leading-tight">La Ecuación <br> de la Finura</h2>
                 
                 <div class="card-elegant p-6 sm:p-10 md:p-16 rounded-sm mx-auto max-w-3xl relative">
                     <span class="absolute top-4 left-4 md:top-6 md:left-8 text-5xl md:text-7xl text-[#C2A878] opacity-20 serif-font">"</span>
-                    <p class="text-[#5A665A] text-base md:text-xl leading-relaxed relative z-10 font-light text-justify mb-6 md:mb-8">
+                    <p class="text-[#5A665A] text-[15px] md:text-xl leading-relaxed relative z-10 font-light text-justify mb-6">
                         La ley primera no es apurar el fuego, sino cuidar la cosecha. Si tenemos una flor de alta genética en las manos, el objetivo innegociable es la preservación máxima de sus propiedades. 
                         <br><br>
                         Asegurar su aplicación precisa según el propósito: ya sea enfoque para la mañana o relajación para el fin de semana. Aquí comienza el camino para lograr el perfecto <strong>Ghee Verde</strong>.
                     </p>
-                    <div class="image-placeholder h-40 md:h-64 rounded-sm mt-6 md:mt-8 relative" style="background-image: url('https://images.unsplash.com/photo-1590458632145-236b281f6cba?auto=format&fit=crop&q=80&w=800'); background-position: center 30%;">
-                        <!-- Decorativo vacío con imagen de fondo -->
-                    </div>
                 </div>
             </div>
         </section>
 
         <!-- PÁGINA 2: Avíos y Descarboxilación -->
         <section class="step-page" id="step-1" data-title="Preparación">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-20 px-2 md:px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-20 px-2 md:px-4 py-2">
                 
                 <div class="flex flex-col justify-center">
                     <h3 class="serif-font text-3xl md:text-4xl text-[#1E2B22] mb-2">I. Los Avíos</h3>
-                    <p class="text-xs md:text-sm text-[#C2A878] uppercase tracking-widest mb-6 md:mb-10">La Base Estándar</p>
+                    <p class="text-xs md:text-sm text-[#C2A878] uppercase tracking-widest mb-6">La Base Estándar</p>
                     
-                    <ul class="space-y-6 md:space-y-8">
+                    <ul class="space-y-6">
                         <li class="border-l-2 border-[#C2A878] pl-4 md:pl-6">
-                            <strong class="block text-[#1E2B22] font-semibold text-base md:text-lg">10g Flor Sativa de Club</strong>
+                            <strong class="block text-[#1E2B22] font-semibold text-[15px] md:text-lg">10g Flor Sativa de Club</strong>
                             <span class="text-sm md:text-base text-[#5A665A] font-light block mt-1">Aporta el espíritu, el THC y los terpenos cítricos.</span>
                         </li>
                         <li class="border-l-2 border-[#C2A878] pl-4 md:pl-6">
-                            <strong class="block text-[#1E2B22] font-semibold text-base md:text-lg">150g Ghee (Clarificada)</strong>
+                            <strong class="block text-[#1E2B22] font-semibold text-[15px] md:text-lg">150g Ghee (Clarificada)</strong>
                             <span class="text-sm md:text-base text-[#5A665A] font-light block mt-1">El vehículo perfecto. Sin agua ni suero.</span>
                         </li>
                         <li class="border-l-2 border-[#5A665A]/40 pl-4 md:pl-6 opacity-80">
-                            <strong class="block text-[#5A665A] font-semibold text-base md:text-lg">Flor Vapeada / AVB (Opcional)</strong>
+                            <strong class="block text-[#5A665A] font-semibold text-[15px] md:text-lg">Flor Vapeada / AVB (Opcional)</strong>
                             <span class="text-sm md:text-base font-light block mt-1">Se reserva únicamente para infusiones nocturnas buscando peso corporal.</span>
                         </li>
                     </ul>
                 </div>
 
-                <div class="card-elegant p-6 sm:p-10 md:p-12 rounded-sm flex flex-col justify-center">
+                <div class="card-elegant p-6 sm:p-10 md:p-12 rounded-sm flex flex-col justify-center mt-2">
                     <h3 class="serif-font text-3xl md:text-4xl text-[#1E2B22] mb-2">II. El Horno Manso</h3>
-                    <p class="text-xs md:text-sm text-[#C2A878] uppercase tracking-widest mb-6 md:mb-8">La Regla de los 115°C</p>
+                    <p class="text-xs md:text-sm text-[#C2A878] uppercase tracking-widest mb-4 md:mb-6">La Regla de los 115°C</p>
                     
-                    <p class="text-sm md:text-base text-[#5A665A] leading-relaxed mb-6 md:mb-8">
+                    <p class="text-[15px] text-[#5A665A] leading-relaxed mb-6">
                         Ponga <strong>solamente la Flor Sativa</strong> en una asadera tapada con aluminio. Al horno a <strong>110°C - 115°C por 40 min</strong>. 
                     </p>
 
@@ -267,7 +265,7 @@
                             <li class="flex justify-between border-b border-[#EAE5D9] pb-2"><span>Mirceno (167°C)</span> <span class="text-[#C2A878] font-medium">Relajación física</span></li>
                             <li class="flex justify-between pb-1"><span>Limoneno (176°C)</span> <span class="text-[#C2A878] font-medium">Euforia</span></li>
                         </ul>
-                        <p class="text-[10px] md:text-xs mt-3 md:mt-4 text-red-900/70 font-medium italic">* No superar los 160°C o se evaporarán.</p>
+                        <p class="text-[10px] md:text-xs mt-3 text-red-900/70 font-medium italic">* No superar los 160°C o se evaporarán.</p>
                     </div>
                 </div>
 
@@ -276,45 +274,45 @@
 
         <!-- PÁGINA 3: Alquimia y Horneado -->
         <section class="step-page" id="step-2" data-title="La Alquimia">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-20 px-2 md:px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-20 px-2 md:px-4 py-2">
                 
                 <div class="flex flex-col justify-center">
                     <h3 class="serif-font text-3xl md:text-4xl text-[#1E2B22] mb-2">III. El Baño de Oro</h3>
-                    <p class="text-xs md:text-sm text-[#C2A878] uppercase tracking-widest mb-6 md:mb-8">Infusión Lenta</p>
+                    <p class="text-xs md:text-sm text-[#C2A878] uppercase tracking-widest mb-6">Infusión Lenta</p>
                     
-                    <div class="space-y-4 md:space-y-6 text-sm md:text-base text-[#5A665A] font-light">
+                    <div class="space-y-4 md:space-y-6 text-[15px] md:text-base text-[#5A665A] font-light">
                         <p class="mb-2">Junte los 150g de Ghee y las flores horneadas en un recipiente de vidrio grueso.</p>
-                        <div class="flex items-start gap-4 md:gap-5">
-                            <span class="text-[#C2A878] font-bold text-lg md:text-xl pt-0.5 md:pt-1">01</span>
+                        <div class="flex items-start gap-4">
+                            <span class="text-[#C2A878] font-bold text-lg pt-0.5">01</span>
                             <p><strong class="text-[#1E2B22]">Baño María:</strong> Agua caliente (75°C a 85°C), sin hervir a borbotones.</p>
                         </div>
-                        <div class="flex items-start gap-4 md:gap-5">
-                            <span class="text-[#C2A878] font-bold text-lg md:text-xl pt-0.5 md:pt-1">02</span>
+                        <div class="flex items-start gap-4">
+                            <span class="text-[#C2A878] font-bold text-lg pt-0.5">02</span>
                             <p><strong class="text-[#1E2B22]">Paciencia:</strong> De 3 a 4 horas. Revolver suavemente cada 30 min.</p>
                         </div>
-                        <div class="flex items-start gap-4 md:gap-5">
-                            <span class="text-[#C2A878] font-bold text-lg md:text-xl pt-0.5 md:pt-1">03</span>
+                        <div class="flex items-start gap-4">
+                            <span class="text-[#C2A878] font-bold text-lg pt-0.5">03</span>
                             <p><strong class="text-[#1E2B22]">Colado:</strong> Use gasa doble. <em class="text-[#8B5A2B] font-medium">¡No exprima!</em> Quedarán ~130g netos.</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="card-elegant p-6 sm:p-10 md:p-12 rounded-sm bg-[#1E2B22] text-white flex flex-col justify-center mt-4 md:mt-0">
+                <div class="card-elegant p-6 sm:p-10 md:p-12 rounded-sm bg-[#1E2B22] text-white flex flex-col justify-center mt-2 md:mt-0">
                     <h3 class="serif-font text-3xl md:text-4xl text-[#C2A878] mb-2">IV. Horneado Final</h3>
-                    <p class="text-xs md:text-sm text-white/50 uppercase tracking-widest mb-6 md:mb-8">La Asadera</p>
+                    <p class="text-[10px] md:text-sm text-white/50 uppercase tracking-widest mb-4 md:mb-8">La Asadera</p>
                     
-                    <p class="text-sm md:text-base text-white/80 leading-relaxed mb-6 md:mb-8 font-light">
+                    <p class="text-[14px] md:text-base text-white/80 leading-relaxed mb-6 font-light">
                         Prepare sus brownies usando los 130g de <strong>Ghee Verde</strong>. 
                         <br><br>
-                        <strong class="text-[#C2A878] text-base md:text-lg block mb-1 md:mb-2">La Regla de Oro:</strong> No pase el horno general de <strong>160°C</strong>. El THC muere a los 100°C internos.
+                        <strong class="text-[#C2A878] text-base md:text-lg block mb-1">La Regla de Oro:</strong> No pase el horno general de <strong>160°C</strong>. El THC muere a los 100°C internos.
                     </p>
 
-                    <div class="border-t border-white/20 pt-4 md:pt-6 mt-2">
-                        <p class="text-sm md:text-base font-semibold mb-2 md:mb-3 text-[#C2A878]">Corte Estándar (Molde 20x20):</p>
-                        <p class="text-xs md:text-sm text-white/60 mb-3 md:mb-4">Divida el molde en 40 cuadraditos idénticos.</p>
-                        <ul class="text-xs md:text-sm space-y-2 md:space-y-3 font-light">
-                            <li class="flex items-center"><span class="inline-block w-4 h-3 md:h-4 bg-[#C2A878] mr-2 md:mr-3 rounded-sm shrink-0"></span> 1 Cuadro = Dosis Medicinal / Foco</li>
-                            <li class="flex items-center"><span class="inline-block w-8 h-3 md:h-4 bg-[#C2A878] mr-2 md:mr-3 rounded-sm shrink-0"></span> 2 Cuadros = Dosis Recreativa</li>
+                    <div class="border-t border-white/20 pt-4 mt-2">
+                        <p class="text-sm font-semibold mb-2 text-[#C2A878]">Corte Estándar (Molde 20x20):</p>
+                        <p class="text-[13px] text-white/60 mb-3">Divida el molde en 40 cuadraditos idénticos.</p>
+                        <ul class="text-[12px] md:text-sm space-y-2 font-light">
+                            <li class="flex items-center"><span class="inline-block w-4 h-3 bg-[#C2A878] mr-3 rounded-sm shrink-0"></span> 1 Cuadro = Dosis Medicinal / Foco</li>
+                            <li class="flex items-center"><span class="inline-block w-8 h-3 bg-[#C2A878] mr-3 rounded-sm shrink-0"></span> 2 Cuadros = Dosis Recreativa</li>
                         </ul>
                     </div>
                 </div>
@@ -324,15 +322,15 @@
 
         <!-- PÁGINA 4: Tablas de Propósito -->
         <section class="step-page" id="step-3" data-title="La Escala">
-            <div class="px-2 md:px-4 w-full">
-                <div class="text-center mb-6 md:mb-10">
-                    <h3 class="serif-font text-3xl md:text-4xl text-[#1E2B22] mb-1 md:mb-2">V. La Tabla del Tropero</h3>
-                    <p class="text-[10px] md:text-sm text-[#C2A878] uppercase tracking-widest">Guía de Referencia (Base: 150g Ghee Verde)</p>
+            <div class="px-2 w-full py-2">
+                <div class="text-center mb-6">
+                    <h3 class="serif-font text-3xl md:text-4xl text-[#1E2B22] mb-1">V. La Tabla del Tropero</h3>
+                    <p class="text-[10px] md:text-xs text-[#C2A878] uppercase tracking-widest">Guía de Referencia (Base: 150g Ghee Verde)</p>
                 </div>
 
-                <div class="card-elegant p-1 md:p-2 rounded-sm mb-6 md:mb-8 max-w-5xl mx-auto w-full">
-                    <!-- Wrapper para scroll horizontal en celulares -->
-                    <div class="overflow-x-auto w-full pb-2">
+                <div class="card-elegant p-1 rounded-sm mb-6 max-w-5xl mx-auto w-full">
+                    <!-- Wrapper para scroll horizontal seguro -->
+                    <div class="overflow-x-auto w-full pb-2 custom-scroll-x">
                         <table class="elegant-table min-w-[500px]">
                             <thead>
                                 <tr>
@@ -346,43 +344,43 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        <strong class="text-[#1E2B22] text-base md:text-lg">Mate del Alba</strong><br>
-                                        <span class="text-[10px] md:text-xs text-[#C2A878] uppercase tracking-wider">Focus y Trabajo</span>
+                                        <strong class="text-[#1E2B22] text-[15px] md:text-lg">Mate del Alba</strong><br>
+                                        <span class="text-[10px] text-[#C2A878] uppercase tracking-wider">Focus y Trabajo</span>
                                     </td>
                                     <td class="font-medium text-[#2C352D]">10 g</td>
                                     <td class="text-gray-400">0 g</td>
                                     <td>110°C</td>
-                                    <td><span class="bg-[#F9F8F6] px-2 py-1 md:px-3 rounded-sm border border-[#EAE5D9]">1 Cuadro</span></td>
+                                    <td><span class="bg-[#F9F8F6] px-2 py-1 rounded-sm border border-[#EAE5D9]">1 Cuadro</span></td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <strong class="text-[#1E2B22] text-base md:text-lg">Alivio del Tropero</strong><br>
-                                        <span class="text-[10px] md:text-xs text-[#C2A878] uppercase tracking-wider">Dolores y Calma</span>
+                                        <strong class="text-[#1E2B22] text-[15px] md:text-lg">Alivio del Tropero</strong><br>
+                                        <span class="text-[10px] text-[#C2A878] uppercase tracking-wider">Dolores y Calma</span>
                                     </td>
                                     <td class="font-medium text-[#2C352D]">12 g</td>
                                     <td class="text-gray-400">0 g</td>
                                     <td>115°C</td>
-                                    <td><span class="bg-[#F9F8F6] px-2 py-1 md:px-3 rounded-sm border border-[#EAE5D9]">1 Cuadro</span></td>
+                                    <td><span class="bg-[#F9F8F6] px-2 py-1 rounded-sm border border-[#EAE5D9]">1 Cuadro</span></td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <strong class="text-[#1E2B22] text-base md:text-lg">Rueda de Fogón</strong><br>
-                                        <span class="text-[10px] md:text-xs text-[#C2A878] uppercase tracking-wider">Charla y Asado</span>
+                                        <strong class="text-[#1E2B22] text-[15px] md:text-lg">Rueda de Fogón</strong><br>
+                                        <span class="text-[10px] text-[#C2A878] uppercase tracking-wider">Charla y Asado</span>
                                     </td>
                                     <td class="font-medium text-[#2C352D]">10 g</td>
                                     <td class="text-gray-400">0 g</td>
                                     <td>110°C</td>
-                                    <td><span class="bg-[#EAE5D9] px-2 py-1 md:px-3 rounded-sm text-[#1E2B22] font-medium">2 Cuadros</span></td>
+                                    <td><span class="bg-[#EAE5D9] px-2 py-1 rounded-sm text-[#1E2B22] font-medium">2 Cuadros</span></td>
                                 </tr>
                                 <tr class="bg-[#FAF8F5]">
                                     <td>
-                                        <strong class="text-[#8B5A2B] text-base md:text-lg">Noche Mansa (*)</strong><br>
-                                        <span class="text-[10px] md:text-xs text-[#C2A878] uppercase tracking-wider">Receta Nocturna</span>
+                                        <strong class="text-[#8B5A2B] text-[15px] md:text-lg">Noche Mansa (*)</strong><br>
+                                        <span class="text-[10px] text-[#C2A878] uppercase tracking-wider">Receta Nocturna</span>
                                     </td>
                                     <td class="font-medium text-[#2C352D]">5 g</td>
                                     <td><strong class="text-[#8B5A2B]">8 g</strong></td>
                                     <td>118°C</td>
-                                    <td><span class="bg-[#EAE5D9] px-2 py-1 md:px-3 rounded-sm text-[#1E2B22] font-medium">2 Cuadros</span></td>
+                                    <td><span class="bg-[#EAE5D9] px-2 py-1 rounded-sm text-[#1E2B22] font-medium">2 Cuadros</span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -393,85 +391,82 @@
 
         <!-- PÁGINA 5: Calculadora App -->
         <section class="step-page" id="step-4" data-title="La Máquina">
-            <div class="px-2 md:px-4 w-full">
-                <div class="text-center mb-6 md:mb-8">
-                    <h3 class="serif-font text-3xl md:text-4xl text-[#1E2B22] mb-2 md:mb-3">VI. La Máquina del Tropero</h3>
-                    <p class="text-sm md:text-base text-[#5A665A] font-light max-w-2xl mx-auto hidden sm:block">Seleccione su viaje deseado y ajuste los gramos. La máquina calculará automáticamente el Ghee y las porciones.</p>
+            <div class="px-2 w-full py-2">
+                <div class="text-center mb-6">
+                    <h3 class="serif-font text-3xl md:text-4xl text-[#1E2B22] mb-2">VI. La Máquina del Tropero</h3>
+                    <p class="text-sm text-[#5A665A] font-light max-w-2xl mx-auto hidden sm:block">Ajuste los gramos y la máquina calculará el Ghee y porciones automáticamente.</p>
                 </div>
 
-                <div class="card-elegant rounded-sm relative max-w-4xl mx-auto shadow-xl bg-white p-4 sm:p-6 md:p-10 w-full">
+                <div class="card-elegant rounded-sm relative max-w-4xl mx-auto shadow-xl bg-white p-4 sm:p-10 w-full">
                     
-                    <!-- Perfiles (Botones) -->
-                    <h4 class="text-[10px] md:text-xs font-semibold uppercase tracking-widest text-[#C2A878] mb-3 md:mb-4">1. Seleccione el Perfil</h4>
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3 mb-6 md:mb-8">
-                        <button class="calc-profile-btn active py-2 md:py-3 px-1 md:px-2 rounded-sm text-xs md:text-sm font-medium flex flex-col items-center justify-center gap-1" data-profile="alba">
-                            <span class="text-base md:text-lg">☀️</span> Mate del Alba
+                    <h4 class="text-[10px] font-semibold uppercase tracking-widest text-[#C2A878] mb-3">1. Seleccione el Perfil</h4>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-6">
+                        <button class="calc-profile-btn active py-2 px-1 rounded-sm text-[11px] sm:text-sm font-medium flex flex-col items-center justify-center gap-1" data-profile="alba">
+                            <span class="text-base">☀️</span> Mate del Alba
                         </button>
-                        <button class="calc-profile-btn py-2 md:py-3 px-1 md:px-2 rounded-sm text-xs md:text-sm font-medium flex flex-col items-center justify-center gap-1" data-profile="alivio">
-                            <span class="text-base md:text-lg">🌿</span> Alivio Tropero
+                        <button class="calc-profile-btn py-2 px-1 rounded-sm text-[11px] sm:text-sm font-medium flex flex-col items-center justify-center gap-1" data-profile="alivio">
+                            <span class="text-base">🌿</span> Alivio Tropero
                         </button>
-                        <button class="calc-profile-btn py-2 md:py-3 px-1 md:px-2 rounded-sm text-xs md:text-sm font-medium flex flex-col items-center justify-center gap-1" data-profile="fogon">
-                            <span class="text-base md:text-lg">🔥</span> Rueda Fogón
+                        <button class="calc-profile-btn py-2 px-1 rounded-sm text-[11px] sm:text-sm font-medium flex flex-col items-center justify-center gap-1" data-profile="fogon">
+                            <span class="text-base">🔥</span> Rueda Fogón
                         </button>
-                        <button class="calc-profile-btn py-2 md:py-3 px-1 md:px-2 rounded-sm text-xs md:text-sm font-medium flex flex-col items-center justify-center gap-1" data-profile="mansa">
-                            <span class="text-base md:text-lg">🌙</span> Noche Mansa
+                        <button class="calc-profile-btn py-2 px-1 rounded-sm text-[11px] sm:text-sm font-medium flex flex-col items-center justify-center gap-1" data-profile="mansa">
+                            <span class="text-base">🌙</span> Noche Mansa
                         </button>
                     </div>
 
-                    <hr class="border-t border-[#EAE5D9] mb-6 md:mb-8">
+                    <hr class="border-t border-[#EAE5D9] mb-6">
 
-                    <!-- Inputs (Cantidades) y Resultados -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-4">
+                    <!-- Inputs y Resultados -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-2">
                         
-                        <!-- Inputs -->
                         <div>
-                            <h4 class="text-[10px] md:text-xs font-semibold uppercase tracking-widest text-[#C2A878] mb-3 md:mb-4">2. Ajuste la Materia</h4>
+                            <h4 class="text-[10px] font-semibold uppercase tracking-widest text-[#C2A878] mb-3">2. Ajuste la Materia</h4>
                             
-                            <div class="mb-4 md:mb-5">
-                                <label class="block text-xs md:text-sm font-semibold text-[#1E2B22] mb-1 md:mb-2">Flor Sativa de Club (g)</label>
+                            <div class="mb-4">
+                                <label class="block text-xs sm:text-sm font-semibold text-[#1E2B22] mb-1">Flor Sativa de Club (g)</label>
                                 <div class="flex items-center">
-                                    <button class="qty-btn px-4 py-2 md:px-5 md:py-2 font-bold rounded-l-sm text-lg" data-target="calc-flor" data-action="minus">−</button>
-                                    <input type="number" id="calc-flor" class="w-16 md:w-20 text-center font-bold text-base md:text-lg border-y border-[#C2A878]/40 py-2 md:py-1.5 outline-none focus:bg-[#FAF8F5] text-[#1E2B22]" value="10" min="0">
-                                    <button class="qty-btn px-4 py-2 md:px-5 md:py-2 font-bold rounded-r-sm text-lg" data-target="calc-flor" data-action="plus">+</button>
+                                    <button class="qty-btn px-4 py-1.5 font-bold rounded-l-sm text-lg" data-target="calc-flor" data-action="minus">−</button>
+                                    <input type="number" id="calc-flor" class="w-16 sm:w-20 text-center font-bold text-base border-y border-[#C2A878]/40 py-1.5 outline-none focus:bg-[#FAF8F5] text-[#1E2B22]" value="10" min="0">
+                                    <button class="qty-btn px-4 py-1.5 font-bold rounded-r-sm text-lg" data-target="calc-flor" data-action="plus">+</button>
                                 </div>
                             </div>
                             
                             <div>
-                                <label class="block text-xs md:text-sm font-semibold text-[#1E2B22] mb-1 md:mb-2">Flor Vapeada / AVB (g)</label>
+                                <label class="block text-xs sm:text-sm font-semibold text-[#1E2B22] mb-1">Flor Vapeada / AVB (g)</label>
                                 <div class="flex items-center opacity-90">
-                                    <button class="qty-btn px-4 py-2 md:px-5 md:py-2 font-bold rounded-l-sm text-lg" data-target="calc-avb" data-action="minus">−</button>
-                                    <input type="number" id="calc-avb" class="w-16 md:w-20 text-center font-bold text-base md:text-lg border-y border-[#C2A878]/40 py-2 md:py-1.5 outline-none focus:bg-[#FAF8F5] text-[#5A665A]" value="0" min="0">
-                                    <button class="qty-btn px-4 py-2 md:px-5 md:py-2 font-bold rounded-r-sm text-lg" data-target="calc-avb" data-action="plus">+</button>
+                                    <button class="qty-btn px-4 py-1.5 font-bold rounded-l-sm text-lg" data-target="calc-avb" data-action="minus">−</button>
+                                    <input type="number" id="calc-avb" class="w-16 sm:w-20 text-center font-bold text-base border-y border-[#C2A878]/40 py-1.5 outline-none focus:bg-[#FAF8F5] text-[#5A665A]" value="0" min="0">
+                                    <button class="qty-btn px-4 py-1.5 font-bold rounded-r-sm text-lg" data-target="calc-avb" data-action="plus">+</button>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Panel de Resultados -->
-                        <div class="bg-[#1E2B22] rounded-sm p-5 md:p-6 shadow-inner text-white flex flex-col justify-center">
-                            <h4 class="text-[10px] md:text-xs font-semibold uppercase tracking-widest text-[#C2A878] mb-4 md:mb-6 border-b border-[#C2A878]/30 pb-2">3. La Receta Exacta</h4>
+                        <div class="bg-[#1E2B22] rounded-sm p-4 sm:p-6 shadow-inner text-white flex flex-col justify-center">
+                            <h4 class="text-[10px] font-semibold uppercase tracking-widest text-[#C2A878] mb-3 border-b border-[#C2A878]/30 pb-2">3. La Receta Exacta</h4>
                             
-                            <div class="grid grid-cols-2 gap-x-2 gap-y-4 md:gap-x-4 md:gap-y-6">
+                            <div class="grid grid-cols-2 gap-x-2 gap-y-4">
                                 <div>
-                                    <span class="block text-[10px] md:text-xs text-white/60 mb-0.5 md:mb-1">Ghee Crudo (g)</span>
+                                    <span class="block text-[10px] text-white/60 mb-0.5">Ghee Crudo (g)</span>
                                     <span class="text-xl sm:text-2xl font-bold text-white" id="res-ghee">150</span>
                                 </div>
                                 <div>
-                                    <span class="block text-[10px] md:text-xs text-white/60 mb-0.5 md:mb-1">Oro Verde (g)</span>
+                                    <span class="block text-[10px] text-white/60 mb-0.5">Oro Verde (g)</span>
                                     <span class="text-xl sm:text-2xl font-bold text-[#C2A878]" id="res-yield">129</span>
                                 </div>
                                 <div>
-                                    <span class="block text-[10px] md:text-xs text-white/60 mb-0.5 md:mb-1">Cortes Totales</span>
-                                    <span class="text-xl sm:text-2xl font-bold text-white" id="res-cuadros">40 <span class="text-xs md:text-sm font-normal">u</span></span>
+                                    <span class="block text-[10px] text-white/60 mb-0.5">Cortes Totales</span>
+                                    <span class="text-xl sm:text-2xl font-bold text-white" id="res-cuadros">40 <span class="text-xs font-normal">u</span></span>
                                 </div>
                                 <div>
-                                    <span class="block text-[10px] md:text-xs text-white/60 mb-0.5 md:mb-1">Horno</span>
+                                    <span class="block text-[10px] text-white/60 mb-0.5">Horno</span>
                                     <span class="text-lg sm:text-xl font-bold text-white" id="res-temp">110°C</span>
                                 </div>
                             </div>
 
-                            <div class="mt-4 md:mt-6 bg-black/20 p-2 md:p-3 rounded-sm border-l-2 border-[#C2A878]">
-                                <span class="block text-[9px] md:text-[10px] text-white/50 uppercase tracking-widest mb-0.5 md:mb-1">Efecto & Dosis</span>
-                                <span class="text-xs md:text-sm font-medium text-[#C2A878]" id="res-dose">1 Cuadro (Foco y Claridad)</span>
+                            <div class="mt-4 bg-black/20 p-2 rounded-sm border-l-2 border-[#C2A878]">
+                                <span class="block text-[9px] text-white/50 uppercase tracking-widest mb-0.5">Efecto & Dosis</span>
+                                <span class="text-[11px] sm:text-xs font-medium text-[#C2A878]" id="res-dose">1 Cuadro (Foco y Claridad)</span>
                             </div>
                         </div>
                     </div>
@@ -482,15 +477,15 @@
 
         <!-- PÁGINA 6: Cierre e Índice -->
         <section class="step-page" id="step-5" data-title="El Cierre">
-            <div class="text-center px-4 md:px-12 py-4 md:py-8 max-w-4xl mx-auto w-full">
-                <span class="text-[#C2A878] text-3xl md:text-4xl mb-4 md:mb-6 block serif-font italic">Salú</span>
-                <h3 class="serif-font text-4xl md:text-5xl text-[#1E2B22] mb-8 md:mb-12">Décimas del Botánico</h3>
+            <div class="text-center px-2 md:px-12 py-2 max-w-4xl mx-auto w-full">
+                <span class="text-[#C2A878] text-2xl md:text-3xl mb-2 md:mb-4 block serif-font italic">Salú</span>
+                <h3 class="serif-font text-3xl md:text-5xl text-[#1E2B22] mb-6 md:mb-10">Décimas del Botánico</h3>
                 
-                <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 mb-10 md:mb-16">
-                    <div class="image-placeholder w-full md:w-2/5 h-48 md:h-64 rounded-sm border border-[#C2A878]/30 shrink-0 shadow-xl relative" style="background-image: url('https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?auto=format&fit=crop&q=80&w=800'); background-position: center;">
+                <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 mb-8 md:mb-12">
+                    <div class="image-placeholder w-full md:w-2/5 h-40 md:h-64 rounded-sm border border-[#C2A878]/30 shrink-0 shadow-xl relative" style="background-image: url('https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?auto=format&fit=crop&q=80&w=800'); background-position: center;">
                     </div>
                     
-                    <div class="text-[#5A665A] text-base md:text-xl leading-relaxed font-light space-y-6 md:space-y-8 italic text-left flex-grow w-full">
+                    <div class="text-[#5A665A] text-[15px] md:text-lg leading-relaxed font-light space-y-4 md:space-y-6 italic text-left flex-grow w-full">
                         <p>
                             Asiente el mate, mi amigo, y escuche con atención,<br>
                             que pa’ lograr la "finura" no basta con la intención.<br>
@@ -507,14 +502,14 @@
                 </div>
 
                 <!-- ÍNDICE DE NAVEGACIÓN -->
-                <div class="border-t border-[#C2A878]/30 pt-6 md:pt-10 w-full">
-                    <h4 class="text-xs md:text-sm font-semibold uppercase tracking-widest text-[#C2A878] mb-4 md:mb-6">Índice del Almanaque</h4>
-                    <div class="flex flex-wrap justify-center gap-2 md:gap-3">
-                        <button onclick="goToStep(0)" class="btn-secondary px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs uppercase tracking-wider rounded-sm hover:shadow-md">1. Prólogo</button>
-                        <button onclick="goToStep(1)" class="btn-secondary px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs uppercase tracking-wider rounded-sm hover:shadow-md">2. Previa</button>
-                        <button onclick="goToStep(2)" class="btn-secondary px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs uppercase tracking-wider rounded-sm hover:shadow-md">3. Alquimia</button>
-                        <button onclick="goToStep(3)" class="btn-secondary px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs uppercase tracking-wider rounded-sm hover:shadow-md">4. Escala</button>
-                        <button onclick="goToStep(4)" class="btn-secondary px-2 md:px-4 py-1.5 md:py-2 text-[10px] md:text-xs uppercase tracking-wider rounded-sm hover:shadow-md">5. Máquina</button>
+                <div class="border-t border-[#C2A878]/30 pt-6 md:pt-10 w-full pb-4">
+                    <h4 class="text-[10px] md:text-xs font-semibold uppercase tracking-widest text-[#C2A878] mb-4">Índice del Almanaque</h4>
+                    <div class="flex flex-wrap justify-center gap-2">
+                        <button onclick="goToStep(0)" class="btn-secondary px-2 py-1.5 text-[10px] uppercase tracking-wider rounded-sm hover:shadow-md">1. Prólogo</button>
+                        <button onclick="goToStep(1)" class="btn-secondary px-2 py-1.5 text-[10px] uppercase tracking-wider rounded-sm hover:shadow-md">2. Previa</button>
+                        <button onclick="goToStep(2)" class="btn-secondary px-2 py-1.5 text-[10px] uppercase tracking-wider rounded-sm hover:shadow-md">3. Alquimia</button>
+                        <button onclick="goToStep(3)" class="btn-secondary px-2 py-1.5 text-[10px] uppercase tracking-wider rounded-sm hover:shadow-md">4. Escala</button>
+                        <button onclick="goToStep(4)" class="btn-secondary px-2 py-1.5 text-[10px] uppercase tracking-wider rounded-sm hover:shadow-md">5. Máquina</button>
                     </div>
                 </div>
             </div>
@@ -522,12 +517,12 @@
 
     </main>
 
-    <!-- Controles de Navegación -->
-    <footer class="w-full max-w-5xl flex justify-between items-center mt-auto pt-4 px-2 md:px-4 pb-2 md:pb-4 border-t md:border-t-0 border-[#C2A878]/20 bg-var(--bg-color)">
-        <button id="btn-prev" class="btn-secondary px-4 sm:px-8 py-2.5 md:py-3.5 text-xs md:text-sm font-semibold tracking-wider uppercase rounded-sm invisible transition-opacity duration-300">
+    <!-- Controles de Navegación Fijos -->
+    <footer class="w-full max-w-5xl flex justify-between items-center shrink-0 pt-2 pb-2 md:pt-4 md:pb-4 border-t border-[#C2A878]/20 bg-transparent z-10 px-2">
+        <button id="btn-prev" class="btn-secondary px-5 md:px-8 py-2 md:py-3 text-[11px] md:text-sm font-semibold tracking-wider uppercase rounded-sm invisible transition-opacity duration-300">
             ← Volver
         </button>
-        <button id="btn-next" class="btn-primary px-6 sm:px-10 py-2.5 md:py-3.5 text-xs md:text-sm font-semibold tracking-wider uppercase rounded-sm shadow-md transition-all duration-300">
+        <button id="btn-next" class="btn-primary px-6 md:px-10 py-2 md:py-3 text-[11px] md:text-sm font-semibold tracking-wider uppercase rounded-sm shadow-md transition-all duration-300">
             Continuar →
         </button>
     </footer>
@@ -553,6 +548,9 @@
                 page.classList.remove('active', 'exit-left', 'exit-right', 'from-left', 'from-right');
                 
                 if (index === currentStep) {
+                    // Reseteo inteligente del scroll de la página entrante (App Feel)
+                    page.scrollTop = 0; 
+
                     if (direction === 'next') {
                         page.classList.add('from-right');
                         void page.offsetWidth; 
@@ -567,7 +565,6 @@
                         page.classList.add('active'); 
                     }
                 } else if (index === previousStep) {
-                    // Página que estamos abandonando
                     if (direction === 'next') {
                         page.classList.add('exit-left');
                     } else if (direction === 'prev') {
@@ -595,11 +592,6 @@
                 btnNext.style.pointerEvents = 'auto';
                 btnNext.onclick = goNext;
             }
-
-            // Forzar scroll al top del contenedor en móviles al cambiar de paso
-            if(window.innerWidth < 768) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
         }
 
         function goNext() {
@@ -624,7 +616,6 @@
             }
         }
 
-        // Función para saltar a un paso específico (Desde el Índice)
         function goToStep(targetIndex) {
             if (isAnimating || targetIndex === currentStep) return;
             isAnimating = true;
@@ -638,11 +629,55 @@
         btnNext.addEventListener('click', goNext);
         btnPrev.addEventListener('click', goPrev);
         
-        // Inicialización
         updateWizard('none');
 
         /* -----------------------------------------------------------------
-           LÓGICA DE LA CALCULADORA (LA MÁQUINA DEL TROPERO)
+           LÓGICA DEL SWIPE (GESTOS TÁCTILES)
+        ----------------------------------------------------------------- */
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+        let blockSwipe = false; // Seguro para tablas con scroll horizontal
+
+        const swipeZone = document.getElementById('swipe-zone');
+
+        swipeZone.addEventListener('touchstart', e => {
+            // Verificar si estamos tocando una tabla que puede hacer scroll horizontal
+            const scrollableParent = e.target.closest('.custom-scroll-x, .overflow-x-auto');
+            if (scrollableParent && scrollableParent.scrollWidth > scrollableParent.clientWidth) {
+                blockSwipe = true;
+            } else {
+                blockSwipe = false;
+                touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
+            }
+        }, {passive: true});
+
+        swipeZone.addEventListener('touchend', e => {
+            if (blockSwipe) return;
+            
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            
+            const diffX = touchStartX - touchEndX;
+            const diffY = touchStartY - touchEndY;
+            
+            // Ignorar swipe si el usuario movió el dedo más arriba/abajo que hacia los lados (Scroll vertical)
+            if (Math.abs(diffY) > Math.abs(diffX) || Math.abs(diffX) < 50) return;
+
+            if (diffX > 0) {
+                // Swipe Izquierda -> Siguiente
+                goNext();
+            } else {
+                // Swipe Derecha -> Anterior
+                goPrev();
+            }
+        }, {passive: true});
+
+
+        /* -----------------------------------------------------------------
+           LÓGICA DE LA MÁQUINA DEL TROPERO (CALCULADORA)
         ----------------------------------------------------------------- */
         const profiles = {
             alba:   { flor: 10, avb: 0, temp: "110°C", dose: "1 Cuadro (Foco y Claridad)" },
