@@ -6,22 +6,63 @@
     <title>Gaucho Botánico | El Alambique del Tropero</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Script preventivo para evitar el parpadeo de estilos (FOUC) -->
+    <script>
+        const savedTheme = localStorage.getItem('alambique_theme');
+        if (savedTheme === 'light') {
+            document.documentElement.classList.add('light-theme');
+        }
+    </script>
+
     <style>
         :root {
-            --bg-color: #F9F8F6;
-            --text-main: #2C352D;
-            --text-muted: #5A665A;
-            --accent-gold: #C2A878;
-            --accent-green: #1E2B22;
-            --nav-bg: rgba(255, 255, 255, 0.95);
+            /* DARK THEME (ESTADO NATURAL / POR DEFECTO) */
+            --color-bg-base: #141614;
+            --color-bg-card: #1C201D;
+            --color-bg-sub: #252A26;
+            --color-bg-panel: #0D0F0E;
+            
+            --color-text-main: #E2E0D5;
+            --color-text-muted: #9BA39D;
+            --color-text-panel: #E2E0D5;
+            
+            --color-accent-gold: #C2A878;
+            --color-accent-brown: #D4A373;
+            --color-danger: #EF4444;
+            
+            --color-border: #323A34;
+            --color-nav-bg: rgba(20, 22, 20, 0.95);
+            --color-btn-active: #2C352D;
+        }
+
+        html.light-theme {
+            /* LIGHT THEME (MODO DÍA) */
+            --color-bg-base: #F9F8F6;
+            --color-bg-card: #FFFFFF;
+            --color-bg-sub: #F0EFEA;
+            --color-bg-panel: #1E2B22;
+            
+            --color-text-main: #1E2B22;
+            --color-text-muted: #5A665A;
+            --color-text-panel: #FFFFFF;
+            
+            --color-accent-gold: #C2A878;
+            --color-accent-brown: #8B5A2B;
+            --color-danger: #991B1B;
+            
+            --color-border: #EAE5D9;
+            --color-nav-bg: rgba(249, 248, 246, 0.95);
+            --color-btn-active: #1E2B22;
         }
 
         body {
             font-family: 'Montserrat', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            background-color: var(--color-bg-base);
+            color: var(--color-text-main);
             background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
             -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         h1, h2, h3, .serif-font {
@@ -78,9 +119,10 @@
 
         /* UI Elements */
         .card-elegant {
-            background: white;
-            border: 1px solid rgba(194, 168, 120, 0.3);
-            box-shadow: 0 4px 20px -5px rgba(0,0,0,0.05);
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            box-shadow: 0 4px 20px -5px rgba(0,0,0,0.2);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         /* Calculadora App Styles */
@@ -89,76 +131,90 @@
         input[type=number] { -moz-appearance: textfield; }
         
         .calc-profile-btn {
-            border: 1px solid rgba(194, 168, 120, 0.3);
-            color: var(--text-muted);
+            border: 1px solid var(--color-border);
+            color: var(--color-text-muted);
             transition: all 0.2s ease;
-            background: #F9F8F6;
+            background: var(--color-bg-sub);
         }
         .calc-profile-btn.active {
-            background-color: var(--accent-green);
-            color: var(--accent-gold);
-            border-color: var(--accent-green);
-            box-shadow: 0 4px 10px rgba(30, 43, 34, 0.15);
+            background-color: var(--color-btn-active);
+            color: var(--color-accent-gold);
+            border-color: var(--color-btn-active);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
         .qty-btn {
-            background: #F9F8F6;
-            color: var(--accent-green);
-            border: 1px solid rgba(194, 168, 120, 0.4);
+            background: var(--color-bg-sub);
+            color: var(--color-text-main);
+            border: 1px solid var(--color-border);
             transition: all 0.2s;
             touch-action: manipulation;
         }
         .qty-btn:active {
-            background: var(--accent-gold);
-            color: white;
-            border-color: var(--accent-gold);
+            background: var(--color-accent-gold);
+            color: #1E2B22;
+            border-color: var(--color-accent-gold);
         }
 
         /* Bottom Nav */
         .bottom-nav {
-            background: var(--nav-bg);
+            background: var(--color-nav-bg);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(194, 168, 120, 0.2);
+            border-top: 1px solid var(--color-border);
             padding-bottom: env(safe-area-inset-bottom);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
         
         .nav-item {
-            color: var(--text-muted);
+            color: var(--color-text-muted);
             transition: all 0.2s ease;
         }
         .nav-item.active {
-            color: var(--accent-green);
+            color: var(--color-text-main);
         }
         .nav-item.active .icon-bg {
-            background-color: var(--accent-gold);
-            color: white;
+            background-color: var(--color-accent-gold);
+            color: #1E2B22;
             transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(194, 168, 120, 0.4);
         }
         .nav-item .icon-bg {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--color-text-muted);
         }
 
         .dyn-val {
-            color: var(--accent-green);
+            color: var(--color-text-main);
             font-weight: 700;
             background: rgba(194, 168, 120, 0.15);
             padding: 0 4px;
             border-radius: 4px;
-            border-bottom: 2px solid var(--accent-gold);
+            border-bottom: 2px solid var(--color-accent-gold);
         }
 
         .terpene-card {
-            border-left: 3px solid var(--accent-gold);
+            border-left: 3px solid var(--color-accent-gold);
+        }
+
+        .elegant-table th {
+            border-bottom: 2px solid var(--color-accent-gold);
+            color: var(--color-text-main);
+        }
+        .elegant-table td {
+            border-bottom: 1px solid var(--color-border);
         }
     </style>
 </head>
 <body class="h-[100dvh] w-screen overflow-hidden flex flex-col">
 
-    <!-- Header Fijo -->
-    <header class="w-full flex justify-center shrink-0 pt-4 pb-3 px-4 bg-gradient-to-b from-[#F9F8F6] to-transparent z-10">
-        <h1 class="serif-font text-2xl md:text-3xl font-bold tracking-wide text-[#1E2B22]">
-            <span class="text-[#C2A878] italic mr-1">El Alambique</span>del Tropero
+    <!-- Header Fijo con Botón de Tema -->
+    <header class="w-full flex justify-center shrink-0 pt-4 pb-3 px-4 relative z-10" style="background: linear-gradient(to bottom, var(--color-bg-base) 60%, transparent);">
+        <h1 class="serif-font text-2xl md:text-3xl font-bold tracking-wide text-[var(--color-text-main)]">
+            <span class="text-[var(--color-accent-gold)] italic mr-1">El Alambique</span>del Tropero
         </h1>
+        <button id="themeToggle" class="absolute right-4 top-4 text-xl p-2 rounded-full hover:bg-[var(--color-bg-sub)] transition-colors focus:outline-none" aria-label="Cambiar Tema">
+            ☀️
+        </button>
     </header>
 
     <!-- ÁREA PRINCIPAL (Tabs Scrolleables) -->
@@ -167,12 +223,12 @@
         <!-- VISTA 1: LA CALCULADORA -->
         <section class="tab-view active pt-2" id="view-0">
             <div class="text-center mb-4 md:mb-6">
-                <p class="text-sm text-[#5A665A] font-light max-w-md mx-auto">Elija el destino de su mateada o ajuste la carga a su gusto. El alambique le dictará la justa pal' yuyo.</p>
+                <p class="text-sm text-[var(--color-text-muted)] font-light max-w-md mx-auto">Elija el destino de su mateada o ajuste la carga a su gusto. El alambique le dictará la justa pal' yuyo.</p>
             </div>
 
-            <div class="card-elegant rounded-xl relative shadow-lg bg-white p-3 sm:p-8 w-full">
+            <div class="card-elegant rounded-xl relative p-3 sm:p-8 w-full">
                 
-                <h4 class="text-[10px] md:text-xs font-semibold uppercase tracking-widest text-[#C2A878] mb-3 ml-1">1. Seleccione la Cebadura</h4>
+                <h4 class="text-[10px] md:text-xs font-semibold uppercase tracking-widest text-[var(--color-accent-gold)] mb-3 ml-1">1. Seleccione la Cebadura</h4>
                 
                 <div class="grid grid-cols-5 gap-1.5 md:gap-2 mb-6">
                     <button class="calc-profile-btn active py-2 sm:py-3 px-0.5 rounded-lg text-[9px] sm:text-xs font-medium flex flex-col items-center justify-center gap-1.5" data-profile="puro">
@@ -192,75 +248,74 @@
                     </button>
                 </div>
 
-                <hr class="border-t border-[#EAE5D9] mb-6">
+                <hr class="border-t border-[var(--color-border)] mb-6">
 
-                <h4 class="text-[10px] md:text-xs font-semibold uppercase tracking-widest text-[#C2A878] mb-3 ml-1">2. Pese la Materia Prima</h4>
+                <h4 class="text-[10px] md:text-xs font-semibold uppercase tracking-widest text-[var(--color-accent-gold)] mb-3 ml-1">2. Pese la Materia Prima</h4>
                 <div class="flex flex-col gap-4 mb-6">
-                    <div class="flex items-center justify-between bg-[#F9F8F6] p-3 rounded-lg border border-[#EAE5D9]">
+                    <div class="flex items-center justify-between bg-[var(--color-bg-sub)] p-3 rounded-lg border border-[var(--color-border)]">
                         <div>
-                            <span class="block text-sm font-semibold text-[#1E2B22]">Flor Pura y Fresca</span>
-                            <span class="text-[10px] text-[#5A665A]">El espíritu vivo (Delta-9-THC)</span>
+                            <span class="block text-sm font-semibold text-[var(--color-text-main)]">Flor Pura y Fresca</span>
+                            <span class="text-[10px] text-[var(--color-text-muted)]">El espíritu vivo (Delta-9-THC)</span>
                         </div>
                         <div class="flex items-center shrink-0 shadow-sm">
                             <button class="qty-btn w-9 h-10 md:w-10 flex items-center justify-center font-bold rounded-l-md text-lg border-r-0" data-target="calc-flor" data-action="minus">−</button>
-                            <input type="number" id="calc-flor" class="w-12 md:w-14 h-10 text-center font-bold text-lg border-y border-[#C2A878]/40 outline-none bg-white text-[#1E2B22]" value="10" min="0" step="0.5">
+                            <input type="number" id="calc-flor" class="w-12 md:w-14 h-10 text-center font-bold text-lg border-y border-[var(--color-border)] outline-none bg-[var(--color-bg-card)] text-[var(--color-text-main)]" value="10" min="0" step="0.5">
                             <button class="qty-btn w-9 h-10 md:w-10 flex items-center justify-center font-bold rounded-r-md text-lg border-l-0" data-target="calc-flor" data-action="plus">+</button>
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between bg-[#F9F8F6] p-3 rounded-lg border border-[#EAE5D9]">
+                    <div class="flex items-center justify-between bg-[var(--color-bg-sub)] p-3 rounded-lg border border-[var(--color-border)]">
                         <div>
-                            <span class="block text-sm font-semibold text-[#1E2B22]">Fuerza del Yuyo (% THC)</span>
-                            <span class="text-[10px] text-[#5A665A]">Estimación genética (Promedio 18%)</span>
+                            <span class="block text-sm font-semibold text-[var(--color-text-main)]">Fuerza del Yuyo (% THC)</span>
+                            <span class="text-[10px] text-[var(--color-text-muted)]">Estimación genética (Promedio 18%)</span>
                         </div>
                         <div class="flex items-center shrink-0 shadow-sm">
                             <button class="qty-btn w-9 h-10 md:w-10 flex items-center justify-center font-bold rounded-l-md text-lg border-r-0" data-target="calc-thc" data-action="minus">−</button>
-                            <input type="number" id="calc-thc" class="w-12 md:w-14 h-10 text-center font-bold text-lg border-y border-[#C2A878]/40 outline-none bg-white text-[#8B5A2B]" value="18" min="0" max="35">
+                            <input type="number" id="calc-thc" class="w-12 md:w-14 h-10 text-center font-bold text-lg border-y border-[var(--color-border)] outline-none bg-[var(--color-bg-card)] text-[var(--color-accent-brown)]" value="18" min="0" max="35">
                             <button class="qty-btn w-9 h-10 md:w-10 flex items-center justify-center font-bold rounded-r-md text-lg border-l-0" data-target="calc-thc" data-action="plus">+</button>
                         </div>
                     </div>
                     
-                    <div class="flex items-center justify-between bg-[#F9F8F6] p-3 rounded-lg border border-[#EAE5D9]">
+                    <div class="flex items-center justify-between bg-[var(--color-bg-sub)] p-3 rounded-lg border border-[var(--color-border)]">
                         <div>
-                            <span class="block text-sm font-semibold text-[#1E2B22]">Chirca Tostada (AVB)</span>
-                            <span class="text-[10px] text-[#8B5A2B]">Flor vapeada. Aporta pesadez (CBN)</span>
+                            <span class="block text-sm font-semibold text-[var(--color-text-main)]">Chirca Tostada (AVB)</span>
+                            <span class="text-[10px] text-[var(--color-accent-brown)]">Flor vapeada. Aporta pesadez (CBN)</span>
                         </div>
                         <div class="flex items-center shrink-0 shadow-sm">
                             <button class="qty-btn w-9 h-10 md:w-10 flex items-center justify-center font-bold rounded-l-md text-lg border-r-0" data-target="calc-avb" data-action="minus">−</button>
-                            <input type="number" id="calc-avb" class="w-12 md:w-14 h-10 text-center font-bold text-lg border-y border-[#C2A878]/40 outline-none bg-white text-[#5A665A]" value="0" min="0" step="0.5">
+                            <input type="number" id="calc-avb" class="w-12 md:w-14 h-10 text-center font-bold text-lg border-y border-[var(--color-border)] outline-none bg-[var(--color-bg-card)] text-[var(--color-text-muted)]" value="0" min="0" step="0.5">
                             <button class="qty-btn w-9 h-10 md:w-10 flex items-center justify-center font-bold rounded-r-md text-lg border-l-0" data-target="calc-avb" data-action="plus">+</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-[#1E2B22] rounded-xl p-5 shadow-inner text-white relative overflow-hidden">
-                    <div class="absolute -right-4 -top-4 opacity-10 text-7xl">⚖️</div>
-                    <h4 class="text-[10px] font-semibold uppercase tracking-widest text-[#C2A878] mb-4">La Balanza del Boticario</h4>
+                <div class="bg-[var(--color-bg-panel)] rounded-xl p-5 shadow-inner text-[var(--color-text-panel)] relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 opacity-10 text-7xl text-[var(--color-text-panel)]">⚖️</div>
+                    <h4 class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-accent-gold)] mb-4">La Balanza del Boticario</h4>
                     
                     <div class="grid grid-cols-2 gap-y-5 gap-x-2 relative z-10">
                         <div>
-                            <span class="block text-[10px] text-white/60 mb-0.5">Grasa Necesaria (Ghee crudo)</span>
-                            <span class="text-2xl font-bold text-white"><span id="res-ghee">150</span> <span class="text-sm font-normal">g</span></span>
+                            <span class="block text-[10px] opacity-60 mb-0.5">Grasa Necesaria (Ghee crudo)</span>
+                            <span class="text-2xl font-bold"><span id="res-ghee">150</span> <span class="text-sm font-normal">g</span></span>
                         </div>
                         <div>
-                            <span class="block text-[10px] text-white/60 mb-0.5">Potencia por Bocado</span>
-                            <span class="text-2xl font-bold text-[#C2A878]"><span id="res-mg">33</span> <span class="text-sm font-normal">mg p/ porción</span></span>
+                            <span class="block text-[10px] opacity-60 mb-0.5">Potencia por Bocado</span>
+                            <span class="text-2xl font-bold text-[var(--color-accent-gold)]"><span id="res-mg">33</span> <span class="text-sm font-normal">mg p/ porción</span></span>
                         </div>
-                        <div class="col-span-2 bg-black/20 p-3 rounded-lg border-l-2 border-[#C2A878] flex justify-between items-center">
+                        <div class="col-span-2 bg-black/30 p-3 rounded-lg border-l-2 border-[var(--color-accent-gold)] flex justify-between items-center">
                             <div class="pr-2">
-                                <span class="block text-[9px] text-white/50 uppercase tracking-widest mb-0.5">Perfil de Viaje Estimado</span>
-                                <span class="text-[11px] sm:text-sm font-medium text-[#C2A878] leading-tight block" id="res-dose">Dosis Recreativa Fuerte</span>
+                                <span class="block text-[9px] opacity-50 uppercase tracking-widest mb-0.5">Perfil de Viaje Estimado</span>
+                                <span class="text-[11px] sm:text-sm font-medium text-[var(--color-accent-gold)] leading-tight block" id="res-dose">Dosis Recreativa Fuerte</span>
                             </div>
-                            <div class="text-right pl-2 border-l border-white/10 shrink-0">
-                                <span class="block text-[9px] text-white/50 uppercase tracking-widest mb-0.5">Cortes Asadera</span>
-                                <span class="text-xl font-bold text-white"><span id="res-cuadros">40</span> <span class="text-xs font-normal">u</span></span>
+                            <div class="text-right pl-2 border-l border-[var(--color-text-panel)] opacity-80 shrink-0">
+                                <span class="block text-[9px] opacity-60 uppercase tracking-widest mb-0.5">Cortes Asadera</span>
+                                <span class="text-xl font-bold"><span id="res-cuadros">40</span> <span class="text-xs font-normal">u</span></span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Botón seguro con Listener por ID -->
-                <button id="btnGoToRecipe" class="w-full mt-4 bg-[#C2A878] text-[#1E2B22] font-bold py-3 rounded-lg shadow-md flex items-center justify-center gap-2 hover:bg-[#b09765] transition-colors text-sm">
+                <button id="btnGoToRecipe" class="w-full mt-4 bg-[var(--color-accent-gold)] text-[#1E2B22] font-bold py-3 rounded-lg shadow-md flex items-center justify-center gap-2 hover:opacity-90 transition-opacity text-sm">
                     Ir al Fogón (Preparación) <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
                 </button>
 
@@ -270,14 +325,14 @@
         <!-- VISTA 2: PREPARACIÓN DINÁMICA -->
         <section class="tab-view pt-2" id="view-1">
             <div class="text-center mb-4">
-                <h2 class="serif-font text-3xl text-[#1E2B22] mb-1">El Fogón del Boticario</h2>
-                <p class="text-xs text-[#C2A878] uppercase tracking-widest">El Ritual Paso a Paso</p>
+                <h2 class="serif-font text-3xl text-[var(--color-text-main)] mb-1">El Fogón del Boticario</h2>
+                <p class="text-xs text-[var(--color-accent-gold)] uppercase tracking-widest">El Ritual Paso a Paso</p>
             </div>
 
             <!-- Comentario Temático Dinámico del Alambique -->
-            <div class="mb-5 bg-[#Fdf8f5] border border-[#e6d0c3] p-3 rounded-lg text-center shadow-sm relative overflow-hidden">
+            <div class="mb-5 bg-[var(--color-bg-sub)] border border-[var(--color-border)] p-3 rounded-lg text-center shadow-sm relative overflow-hidden">
                 <span class="absolute -left-2 -top-2 opacity-10 text-4xl">🧉</span>
-                <p id="dyn-message" class="text-sm text-[#8B5A2B] font-medium italic relative z-10 leading-relaxed font-serif">
+                <p id="dyn-message" class="text-sm text-[var(--color-accent-brown)] font-medium italic relative z-10 leading-relaxed font-serif">
                     <!-- Text injected by JS -->
                 </p>
             </div>
@@ -286,61 +341,61 @@
                 
                 <!-- PASO 1: Descarboxilación -->
                 <div class="card-elegant p-5 rounded-xl">
-                    <div class="flex items-center gap-3 mb-3 border-b border-[#EAE5D9] pb-3">
-                        <div class="w-8 h-8 rounded-full bg-[#1E2B22] text-[#C2A878] flex items-center justify-center font-bold font-serif">1</div>
-                        <h3 class="serif-font text-2xl text-[#1E2B22] leading-none">El Despertar del Yuyo</h3>
+                    <div class="flex items-center gap-3 mb-3 border-b border-[var(--color-border)] pb-3">
+                        <div class="w-8 h-8 rounded-full bg-[var(--color-btn-active)] text-[var(--color-accent-gold)] flex items-center justify-center font-bold font-serif">1</div>
+                        <h3 class="serif-font text-2xl text-[var(--color-text-main)] leading-none">El Despertar del Yuyo</h3>
                     </div>
                     
-                    <p class="text-sm text-[#5A665A] leading-relaxed">
-                        Agarre sus <span class="dyn-val" id="dyn-flor">10</span> <strong class="text-[#1E2B22]">gramos de Flor Pura</strong> y píquelos mansito, sin hacerlos polvo. Échelos en una asadera y tápela con plomo (papel aluminio) pa' atrapar el aroma, igual que se tapa el mate pa' que no se enfríe la yerba.
+                    <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+                        Agarre sus <span class="dyn-val" id="dyn-flor">10</span> <strong class="text-[var(--color-text-main)]">gramos de Flor Pura</strong> y píquelos mansito, sin hacerlos polvo. Échelos en una asadera y tápela con plomo (papel aluminio) pa' atrapar el aroma, igual que se tapa el mate pa' que no se enfríe la yerba.
                     </p>
-                    <div class="mt-3 bg-[#F9F8F6] p-3 rounded text-sm border border-[#EAE5D9]">
+                    <div class="mt-3 bg-[var(--color-bg-sub)] p-3 rounded text-sm border border-[var(--color-border)] text-[var(--color-text-main)]">
                         Al horno manso a <span class="dyn-val" id="dyn-temp">110°C</span> por <strong>40 minutitos</strong> pa' que el THC despierte.
-                        <span class="block text-[10px] text-red-800 mt-1 italic">*Atención: No apure el fuego. Si pasa los 160°C, quema el yuyo como yerba hervida.</span>
+                        <span class="block text-[10px] text-[var(--color-danger)] mt-1 italic">*Atención: No apure el fuego. Si pasa los 160°C, quema el yuyo como yerba hervida.</span>
                     </div>
                 </div>
 
                 <!-- PASO 2: Infusión -->
                 <div class="card-elegant p-5 rounded-xl">
-                    <div class="flex items-center gap-3 mb-3 border-b border-[#EAE5D9] pb-3">
-                        <div class="w-8 h-8 rounded-full bg-[#1E2B22] text-[#C2A878] flex items-center justify-center font-bold font-serif">2</div>
-                        <h3 class="serif-font text-2xl text-[#1E2B22] leading-none">El Baño de Oro Verde</h3>
+                    <div class="flex items-center gap-3 mb-3 border-b border-[var(--color-border)] pb-3">
+                        <div class="w-8 h-8 rounded-full bg-[var(--color-btn-active)] text-[var(--color-accent-gold)] flex items-center justify-center font-bold font-serif">2</div>
+                        <h3 class="serif-font text-2xl text-[var(--color-text-main)] leading-none">El Baño de Oro Verde</h3>
                     </div>
                     
-                    <p class="text-sm text-[#5A665A] leading-relaxed mb-3">
-                        En un frasco al baño maría, acomode los <span class="dyn-val" id="dyn-ghee">150</span> <strong class="text-[#1E2B22]">gramos de Ghee crudo</strong>. 
+                    <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-3">
+                        En un frasco al baño maría, acomode los <span class="dyn-val" id="dyn-ghee">150</span> <strong class="text-[var(--color-text-main)]">gramos de Ghee crudo</strong>. 
                         <br><br>
-                        Vuelque la flor recién horneada <span id="dyn-avb-section" class="hidden">y póngale los <span class="dyn-val bg-[#EAE5D9] text-[#8B5A2B] border-[#8B5A2B]" id="dyn-avb">0</span> <strong class="text-[#8B5A2B]">gramos de Chirca Tostada (AVB)</strong> pal' peso</span>.
+                        Vuelque la flor recién horneada <span id="dyn-avb-section" class="hidden">y póngale los <span class="dyn-val" style="border-color: var(--color-accent-brown); color: var(--color-accent-brown)" id="dyn-avb">0</span> <strong class="text-[var(--color-accent-brown)]">gramos de Chirca Tostada (AVB)</strong> pal' peso</span>.
                     </p>
-                    <ul class="text-sm text-[#5A665A] space-y-2 mt-2 list-disc pl-4">
+                    <ul class="text-sm text-[var(--color-text-muted)] space-y-2 mt-2 list-disc pl-4">
                         <li><strong>El Agua:</strong> Entre 75°C y 85°C. Como el agua pal' mate, que chifle bajito pero que no hierva a borbotones.</li>
                         <li><strong>El Tiempo:</strong> Deje la infusión 3 a 4 horitas, revolviendo suave cada rato.</li>
-                        <li><strong>El Colado:</strong> Pase por gasa doble. <strong>¡No estruje la tela!</strong> Deje gotear, o le va a quedar un amargor fiero a clorofila.</li>
+                        <li><strong>El Colado:</strong> Pase por gasa doble. <strong class="text-[var(--color-text-main)]">¡No estruje la tela!</strong> Deje gotear, o le va a quedar un amargor fiero a clorofila.</li>
                     </ul>
-                    <div class="mt-3 text-sm text-[#1E2B22] font-semibold bg-[#F9F8F6] p-2 rounded text-center border border-[#C2A878]/30">
+                    <div class="mt-3 text-sm font-semibold bg-[var(--color-bg-sub)] text-[var(--color-accent-gold)] p-2 rounded text-center border border-[var(--color-accent-gold)]">
                         Rendimiento de su alquimia: <span class="dyn-val" id="dyn-yield">129</span> gramos de Oro Verde netos.
                     </div>
                 </div>
 
                 <!-- PASO 3: Asadera Final -->
                 <div class="card-elegant p-5 rounded-xl">
-                    <div class="flex items-center gap-3 mb-3 border-b border-[#EAE5D9] pb-3">
-                        <div class="w-8 h-8 rounded-full bg-[#1E2B22] text-[#C2A878] flex items-center justify-center font-bold font-serif">3</div>
-                        <h3 class="serif-font text-2xl text-[#1E2B22] leading-none">La Partición del Bizcocho</h3>
+                    <div class="flex items-center gap-3 mb-3 border-b border-[var(--color-border)] pb-3">
+                        <div class="w-8 h-8 rounded-full bg-[var(--color-btn-active)] text-[var(--color-accent-gold)] flex items-center justify-center font-bold font-serif">3</div>
+                        <h3 class="serif-font text-2xl text-[var(--color-text-main)] leading-none">La Partición del Bizcocho</h3>
                     </div>
                     
-                    <p class="text-sm text-[#5A665A] leading-relaxed mb-3">
-                        Arme la masa de sus bocados usando los <span class="dyn-val" id="dyn-yield2">129</span> <strong class="text-[#1E2B22]">gramos de Oro Verde</strong>. 
-                        Mande la asadera al horno, pero vigile que <strong class="text-red-900">no pase los 160°C ambientales</strong>, pa' no matar el milagro.
+                    <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-3">
+                        Arme la masa de sus bocados usando los <span class="dyn-val" id="dyn-yield2">129</span> <strong class="text-[var(--color-text-main)]">gramos de Oro Verde</strong>. 
+                        Mande la asadera al horno, pero vigile que <strong class="text-[var(--color-danger)]">no pase los 160°C ambientales</strong>, pa' no matar el milagro.
                     </p>
                     
-                    <div class="bg-[#1E2B22] text-white p-4 rounded-lg mt-2 relative overflow-hidden">
+                    <div class="bg-[var(--color-bg-panel)] text-[var(--color-text-panel)] p-4 rounded-lg mt-2 relative overflow-hidden">
                         <div class="absolute right-0 bottom-0 opacity-10">
                             <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm2 2h3v3H8V8zm5 0h3v3h-3V8zm-5 5h3v3H8v-3zm5 0h3v3h-3v-3z"/></svg>
                         </div>
-                        <p class="text-xs uppercase tracking-widest text-[#C2A878] mb-2 relative z-10">La Matemática del Paisano</p>
-                        <p class="text-sm mb-2 relative z-10">Pa' que cada bocado tenga sus redondos <strong class="text-[#C2A878] dyn-val px-1 rounded bg-black/30 border-none" id="dyn-mg">33</strong><strong class="text-[#C2A878]">mg de sustancia</strong>, usted tiene que cortar el molde frío en:</p>
-                        <p class="text-3xl font-serif text-[#C2A878] relative z-10"><span id="dyn-cuadros">40</span> <span class="text-lg font-sans text-white/80">pedazos parejitos.</span></p>
+                        <p class="text-xs uppercase tracking-widest text-[var(--color-accent-gold)] mb-2 relative z-10">La Matemática del Paisano</p>
+                        <p class="text-sm mb-2 relative z-10">Pa' que cada bocado tenga sus redondos <strong class="text-[var(--color-accent-gold)] dyn-val px-1 rounded bg-black/30 border-none" id="dyn-mg">33</strong><strong class="text-[var(--color-accent-gold)]">mg de sustancia</strong>, usted tiene que cortar el molde frío en:</p>
+                        <p class="text-3xl font-serif text-[var(--color-accent-gold)] relative z-10"><span id="dyn-cuadros">40</span> <span class="text-lg font-sans opacity-80">pedazos parejitos.</span></p>
                     </div>
                 </div>
 
@@ -350,52 +405,52 @@
         <!-- VISTA 3: LA ESCALA Y LOS TERPENOS -->
         <section class="tab-view pt-2" id="view-2">
             <div class="text-center mb-6">
-                <h2 class="serif-font text-3xl text-[#1E2B22] mb-1">Ciencia y Arquetipos</h2>
-                <p class="text-[10px] md:text-xs text-[#C2A878] uppercase tracking-widest">El Saber del Yuyo y la Grasa</p>
+                <h2 class="serif-font text-3xl text-[var(--color-text-main)] mb-1">Ciencia y Arquetipos</h2>
+                <p class="text-[10px] md:text-xs text-[var(--color-accent-gold)] uppercase tracking-widest">El Saber del Yuyo y la Grasa</p>
             </div>
 
             <!-- Tabla de Perfiles Farmacológicos -->
             <div class="card-elegant rounded-xl mb-6 overflow-hidden">
-                <div class="bg-[#1E2B22] text-[#C2A878] text-xs uppercase tracking-widest font-semibold p-3 text-center border-b border-[#C2A878]/20">
+                <div class="bg-[var(--color-bg-panel)] text-[var(--color-accent-gold)] text-xs uppercase tracking-widest font-semibold p-3 text-center border-b border-[var(--color-accent-gold)] opacity-90">
                     Espectro de la Cebadura (Fuerza en mg)
                 </div>
                 <div class="overflow-x-auto w-full">
-                    <table class="w-full text-left border-collapse min-w-[550px]">
+                    <table class="elegant-table min-w-[550px]">
                         <thead>
-                            <tr class="bg-[#F9F8F6] text-[#5A665A] text-xs uppercase tracking-wider">
-                                <th class="p-3 border-b border-[#EAE5D9]">Categoría del Viaje</th>
-                                <th class="p-3 border-b border-[#EAE5D9]">Rango (THC)</th>
-                                <th class="p-3 border-b border-[#EAE5D9]">Perfil de Efecto</th>
+                            <tr class="bg-[var(--color-bg-sub)] text-[var(--color-text-muted)] text-xs uppercase tracking-wider">
+                                <th class="p-3">Categoría del Viaje</th>
+                                <th class="p-3">Rango (THC)</th>
+                                <th class="p-3">Perfil de Efecto</th>
                             </tr>
                         </thead>
                         <tbody class="text-sm">
-                            <tr class="border-b border-[#EAE5D9] hover:bg-[#F9F8F6] transition-colors">
-                                <td class="p-3">
-                                    <strong class="text-[#1E2B22] block mb-0.5">Cimarrón Puro (100% Flor)</strong>
+                            <tr class="hover:bg-[var(--color-bg-sub)] transition-colors">
+                                <td class="p-3 border-b border-[var(--color-border)]">
+                                    <strong class="text-[var(--color-text-main)] block mb-0.5">Cimarrón Puro (100% Flor)</strong>
                                 </td>
-                                <td class="p-3 text-[#2C352D] font-medium"><span class="text-[#C2A878] font-bold">1 - 5</span> mg</td>
-                                <td class="p-3 text-[#5A665A] leading-tight">Te deja más despierto que tero en descampado. Microdosis pa' matear tempranito y encarar la jornada con un chiflido manso.</td>
+                                <td class="p-3 text-[var(--color-text-main)] font-medium border-b border-[var(--color-border)]"><span class="text-[var(--color-accent-gold)] font-bold">1 - 5</span> mg</td>
+                                <td class="p-3 text-[var(--color-text-muted)] leading-tight border-b border-[var(--color-border)]">Te deja más despierto que tero en descampado. Microdosis pa' matear tempranito y encarar la jornada con un chiflido manso.</td>
                             </tr>
-                            <tr class="border-b border-[#EAE5D9] hover:bg-[#F9F8F6] transition-colors">
-                                <td class="p-3">
-                                    <strong class="text-[#1E2B22] block mb-0.5">Rueda Matera (~80% Flor)</strong>
+                            <tr class="hover:bg-[var(--color-bg-sub)] transition-colors">
+                                <td class="p-3 border-b border-[var(--color-border)]">
+                                    <strong class="text-[var(--color-text-main)] block mb-0.5">Rueda Matera (~80% Flor)</strong>
                                 </td>
-                                <td class="p-3 text-[#2C352D] font-medium"><span class="text-[#C2A878] font-bold">5 - 15</span> mg</td>
-                                <td class="p-3 text-[#5A665A] leading-tight">Lengua suelta y risa fácil. Alegría mansa ideal pa' arreglar el mundo en ronda o filosofar mirando las brasas de la estufa.</td>
+                                <td class="p-3 text-[var(--color-text-main)] font-medium border-b border-[var(--color-border)]"><span class="text-[var(--color-accent-gold)] font-bold">5 - 15</span> mg</td>
+                                <td class="p-3 text-[var(--color-text-muted)] leading-tight border-b border-[var(--color-border)]">Lengua suelta y risa fácil. Alegría mansa ideal pa' arreglar el mundo en ronda o filosofar mirando las brasas de la estufa.</td>
                             </tr>
-                            <tr class="border-b border-[#EAE5D9] hover:bg-[#F9F8F6] transition-colors">
-                                <td class="p-3">
-                                    <strong class="text-[#1E2B22] block mb-0.5">Mitad y Mitad (~50% Flor)</strong>
+                            <tr class="hover:bg-[var(--color-bg-sub)] transition-colors">
+                                <td class="p-3 border-b border-[var(--color-border)]">
+                                    <strong class="text-[var(--color-text-main)] block mb-0.5">Mitad y Mitad (~50% Flor)</strong>
                                 </td>
-                                <td class="p-3 text-[#2C352D] font-medium"><span class="text-[#C2A878] font-bold">15 - 30</span> mg</td>
-                                <td class="p-3 text-[#5A665A] leading-tight">Las piernas se te hacen de plomo dulce. Especial pa' quedarse en el catre contemplando el techo largo y tendido.</td>
+                                <td class="p-3 text-[var(--color-text-main)] font-medium border-b border-[var(--color-border)]"><span class="text-[var(--color-accent-gold)] font-bold">15 - 30</span> mg</td>
+                                <td class="p-3 text-[var(--color-text-muted)] leading-tight border-b border-[var(--color-border)]">Las piernas se te hacen de plomo dulce. Especial pa' quedarse en el catre contemplando el techo largo y tendido.</td>
                             </tr>
-                            <tr class="hover:bg-[#F9F8F6] transition-colors">
+                            <tr class="hover:bg-[var(--color-bg-sub)] transition-colors">
                                 <td class="p-3">
-                                    <strong class="text-[#8B5A2B] block mb-0.5">Noche Mansa (Más AVB)</strong>
+                                    <strong class="text-[var(--color-accent-brown)] block mb-0.5">Noche Mansa (Más AVB)</strong>
                                 </td>
-                                <td class="p-3 text-[#2C352D] font-medium"><span class="text-red-800 font-bold">> 30</span> mg</td>
-                                <td class="p-3 text-[#5A665A] leading-tight">Te aploma contra la silla. El morfeo criollo lo va a tapar con poncho grueso y ni el trueno del temporal lo levanta antes de tiempo.</td>
+                                <td class="p-3 text-[var(--color-text-main)] font-medium"><span class="text-[var(--color-danger)] font-bold">> 30</span> mg</td>
+                                <td class="p-3 text-[var(--color-text-muted)] leading-tight">Te aploma contra la silla. El morfeo criollo lo va a tapar con poncho grueso y ni el trueno del temporal lo levanta antes de tiempo.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -403,69 +458,69 @@
             </div>
 
             <!-- LOS ESPÍRITUS DEL YUYO (Terpenos) -->
-            <div class="card-elegant p-5 rounded-xl mb-4 bg-white">
-                <h4 class="serif-font text-2xl text-[#1E2B22] mb-3 border-b border-[#EAE5D9] pb-2 flex items-center gap-2">
+            <div class="card-elegant p-5 rounded-xl mb-4">
+                <h4 class="serif-font text-2xl text-[var(--color-text-main)] mb-3 border-b border-[var(--color-border)] pb-2 flex items-center gap-2">
                     <span class="text-xl">🌬️</span> Los Espíritus del Yuyo
                 </h4>
-                <p class="text-xs text-[#5A665A] mb-4 text-justify">
+                <p class="text-xs text-[var(--color-text-muted)] mb-4 text-justify">
                     Si usté le erra a la temperatura del horno, la planta le cobra peaje evaporando su esencia (los terpenos). Aquí tiene la lista de los espíritus, a qué temperatura levantan vuelo, y el responso criollo pa' cuando los pierde por andar apurado:
                 </p>
 
                 <div class="space-y-4">
-                    <div class="terpene-card bg-[#F9F8F6] p-3 rounded-r-lg border border-[#EAE5D9] border-l-0 relative overflow-hidden">
+                    <div class="terpene-card bg-[var(--color-bg-sub)] p-3 rounded-r-lg border border-[var(--color-border)] border-l-0 relative overflow-hidden">
                         <div class="flex justify-between items-start mb-1">
-                            <strong class="text-[#1E2B22] text-sm flex items-center gap-1">🌲 Pineno</strong>
-                            <span class="text-xs font-bold text-[#8B5A2B]">Fuga: 155°C</span>
+                            <strong class="text-[var(--color-text-main)] text-sm flex items-center gap-1">🌲 Pineno</strong>
+                            <span class="text-xs font-bold text-[var(--color-accent-brown)]">Fuga: 155°C</span>
                         </div>
-                        <p class="text-[11px] text-[#5A665A] mb-2">Da foco y olor a leña de monte verde.</p>
-                        <p class="text-xs italic text-[#1E2B22] font-serif">"Se te fue el olor a monte, paisano; te quedó el mate lavado y la mente en la niebla."</p>
+                        <p class="text-[11px] text-[var(--color-text-muted)] mb-2">Da foco y olor a leña de monte verde.</p>
+                        <p class="text-xs italic text-[var(--color-text-main)] font-serif">"Se te fue el olor a monte, paisano; te quedó el mate lavado y la mente en la niebla."</p>
                     </div>
 
-                    <div class="terpene-card bg-[#F9F8F6] p-3 rounded-r-lg border border-[#EAE5D9] border-l-0 relative overflow-hidden">
+                    <div class="terpene-card bg-[var(--color-bg-sub)] p-3 rounded-r-lg border border-[var(--color-border)] border-l-0 relative overflow-hidden">
                         <div class="flex justify-between items-start mb-1">
-                            <strong class="text-[#1E2B22] text-sm flex items-center gap-1">🌿 Mirceno</strong>
-                            <span class="text-xs font-bold text-[#8B5A2B]">Fuga: 167°C</span>
+                            <strong class="text-[var(--color-text-main)] text-sm flex items-center gap-1">🌿 Mirceno</strong>
+                            <span class="text-xs font-bold text-[var(--color-accent-brown)]">Fuga: 167°C</span>
                         </div>
-                        <p class="text-[11px] text-[#5A665A] mb-2">Relaja el cuerpo, huele a tierra húmeda tras la lluvia.</p>
-                        <p class="text-xs italic text-[#1E2B22] font-serif">"Voló el reposo pa' los huesos. Ahora a aguantar el tirón sin colchón de plumas."</p>
+                        <p class="text-[11px] text-[var(--color-text-muted)] mb-2">Relaja el cuerpo, huele a tierra húmeda tras la lluvia.</p>
+                        <p class="text-xs italic text-[var(--color-text-main)] font-serif">"Voló el reposo pa' los huesos. Ahora a aguantar el tirón sin colchón de plumas."</p>
                     </div>
 
-                    <div class="terpene-card bg-[#F9F8F6] p-3 rounded-r-lg border border-[#EAE5D9] border-l-0 relative overflow-hidden">
+                    <div class="terpene-card bg-[var(--color-bg-sub)] p-3 rounded-r-lg border border-[var(--color-border)] border-l-0 relative overflow-hidden">
                         <div class="flex justify-between items-start mb-1">
-                            <strong class="text-[#1E2B22] text-sm flex items-center gap-1">🍋 Limoneno</strong>
-                            <span class="text-xs font-bold text-[#8B5A2B]">Fuga: 176°C</span>
+                            <strong class="text-[var(--color-text-main)] text-sm flex items-center gap-1">🍋 Limoneno</strong>
+                            <span class="text-xs font-bold text-[var(--color-accent-brown)]">Fuga: 176°C</span>
                         </div>
-                        <p class="text-[11px] text-[#5A665A] mb-2">Levanta el ánimo, chispa cítrica.</p>
-                        <p class="text-xs italic text-[#1E2B22] font-serif">"Se te escapó la risa fácil por la chimenea; quedó el yuyo amargo y sin gracia."</p>
+                        <p class="text-[11px] text-[var(--color-text-muted)] mb-2">Levanta el ánimo, chispa cítrica.</p>
+                        <p class="text-xs italic text-[var(--color-text-main)] font-serif">"Se te escapó la risa fácil por la chimenea; quedó el yuyo amargo y sin gracia."</p>
                     </div>
 
-                    <div class="terpene-card bg-[#F9F8F6] p-3 rounded-r-lg border border-[#EAE5D9] border-l-0 relative overflow-hidden">
+                    <div class="terpene-card bg-[var(--color-bg-sub)] p-3 rounded-r-lg border border-[var(--color-border)] border-l-0 relative overflow-hidden">
                         <div class="flex justify-between items-start mb-1">
-                            <strong class="text-[#1E2B22] text-sm flex items-center gap-1">🪻 Linalool</strong>
-                            <span class="text-xs font-bold text-[#8B5A2B]">Fuga: 198°C</span>
+                            <strong class="text-[var(--color-text-main)] text-sm flex items-center gap-1">🪻 Linalool</strong>
+                            <span class="text-xs font-bold text-[var(--color-accent-brown)]">Fuga: 198°C</span>
                         </div>
-                        <p class="text-[11px] text-[#5A665A] mb-2">Floral y manso, es el sedante por excelencia.</p>
-                        <p class="text-xs italic text-[#1E2B22] font-serif">"Arrebataste hasta la flor más resistente. No hay sueño parejo que te salve hoy."</p>
+                        <p class="text-[11px] text-[var(--color-text-muted)] mb-2">Floral y manso, es el sedante por excelencia.</p>
+                        <p class="text-xs italic text-[var(--color-text-main)] font-serif">"Arrebataste hasta la flor más resistente. No hay sueño parejo que te salve hoy."</p>
                     </div>
                 </div>
             </div>
 
             <!-- Bloque Científico Farmacocinético -->
-            <div class="card-elegant p-5 rounded-xl mb-4 bg-white">
-                <h4 class="serif-font text-2xl text-[#1E2B22] mb-3 border-b border-[#EAE5D9] pb-2 flex items-center gap-2">
+            <div class="card-elegant p-5 rounded-xl mb-4">
+                <h4 class="serif-font text-2xl text-[var(--color-text-main)] mb-3 border-b border-[var(--color-border)] pb-2 flex items-center gap-2">
                     <span class="text-xl">🧬</span> Metabolismo del Paisano
                 </h4>
                 
-                <div class="space-y-4 text-sm text-[#5A665A] leading-relaxed text-justify">
+                <div class="space-y-4 text-sm text-[var(--color-text-muted)] leading-relaxed text-justify">
                     <div>
-                        <strong class="text-[#1E2B22] block mb-1">El Hígado y el 11-OH-THC</strong>
+                        <strong class="text-[var(--color-text-main)] block mb-1">El Hígado y el 11-OH-THC</strong>
                         Al comer el yuyo, el hígado del gaucho convierte el Delta-9-THC en <em>11-Hidroxi-THC</em>. Este metabolito cruza al cerebro como caballo sin freno, por eso el bocado pega más fuerte y dura más horas que una pitada de humo.
                     </div>
                     <div>
-                        <strong class="text-[#1E2B22] block mb-1">El Abrazo de la Grasa (Ghee)</strong>
+                        <strong class="text-[var(--color-text-main)] block mb-1">El Abrazo de la Grasa (Ghee)</strong>
                         El THC es amigo de las grasas. El Ghee, al no tener agua, atrapa casi el 75-80% de la fuerza del yuyo. En "La Máquina", calculamos exacto cuánta grasa precisa la yerba pa' no desperdiciar nada:
-                        <div class="bg-[#F9F8F6] p-2 mt-2 rounded border border-[#EAE5D9] text-center">
-                            <code class="text-[10px] font-bold text-[#8B5A2B]">Miligramos = (Gramos Flor × 1000) × (% THC ÷ 100) × 0.75</code>
+                        <div class="bg-[var(--color-bg-sub)] p-2 mt-2 rounded border border-[var(--color-border)] text-center">
+                            <code class="text-[10px] font-bold text-[var(--color-accent-brown)]">Miligramos = (Gramos Flor × 1000) × (% THC ÷ 100) × 0.75</code>
                         </div>
                     </div>
                 </div>
@@ -475,17 +530,17 @@
         <!-- VISTA 4: EL LORE (ALMANAQUE Y REFERENCIAS) -->
         <section class="tab-view pt-2" id="view-3">
             <div class="text-center mb-6">
-                <h2 class="serif-font text-3xl text-[#1E2B22] mb-1">El Almanaque</h2>
-                <p class="text-[10px] md:text-xs text-[#C2A878] uppercase tracking-widest">Sabiduría Oriental y Ciencia</p>
+                <h2 class="serif-font text-3xl text-[var(--color-text-main)] mb-1">El Almanaque</h2>
+                <p class="text-[10px] md:text-xs text-[var(--color-accent-gold)] uppercase tracking-widest">Sabiduría Oriental y Ciencia</p>
             </div>
 
             <!-- El Poema -->
             <div class="card-elegant p-6 sm:p-10 rounded-xl mb-6 text-center relative overflow-hidden">
                 <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: url('https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?auto=format&fit=crop&q=80'); background-size: cover; background-position: center;"></div>
                 
-                <h3 class="serif-font text-3xl text-[#1E2B22] mb-6 relative z-10">Décimas de la Rueda Matera</h3>
+                <h3 class="serif-font text-3xl text-[var(--color-text-main)] mb-6 relative z-10">Décimas de la Rueda Matera</h3>
                 
-                <div class="text-[#5A665A] text-[15px] leading-relaxed font-light space-y-5 italic relative z-10">
+                <div class="text-[var(--color-text-muted)] text-[15px] leading-relaxed font-light space-y-5 italic relative z-10">
                     <p>
                         Asiente el mate, mi amigo, y escuche con atención,<br>
                         que pa’ lograr buen viaje no basta con la intención.<br>
@@ -514,28 +569,28 @@
             </div>
 
             <!-- Referencias Científicas -->
-            <div class="p-5 border border-[#C2A878]/30 rounded-xl bg-[#F9F8F6] relative">
-                <div class="absolute -top-3 left-4 bg-[#F9F8F6] px-2">
-                    <h4 class="text-xs uppercase tracking-widest font-semibold text-[#8B5A2B]">Pergaminos de los Doctores</h4>
+            <div class="p-5 border border-[var(--color-accent-gold)]/30 rounded-xl bg-[var(--color-bg-sub)] relative">
+                <div class="absolute -top-3 left-4 bg-[var(--color-bg-sub)] px-2 rounded">
+                    <h4 class="text-xs uppercase tracking-widest font-semibold text-[var(--color-accent-brown)]">Pergaminos de los Doctores</h4>
                 </div>
-                <p class="text-[11px] text-[#5A665A] mb-3 mt-1 italic">
+                <p class="text-[11px] text-[var(--color-text-muted)] mb-3 mt-1 italic">
                     La cencia del "Alambique del Tropero" no es puro cuento de boliche; se apoya firme en los siguientes tratados académicos:
                 </p>
-                <ul class="space-y-3 text-[10px] md:text-xs text-[#5A665A] leading-relaxed">
-                    <li class="pl-3 border-l border-[#C2A878]">
-                        <strong class="text-[#1E2B22]">Huestis, M. A. (2007).</strong> <em>Human Cannabinoid Pharmacokinetics</em>. Chemistry & Biodiversity. (Explica la paliza metabólica del hígado y el 11-OH-THC).
+                <ul class="space-y-3 text-[10px] md:text-xs text-[var(--color-text-muted)] leading-relaxed">
+                    <li class="pl-3 border-l border-[var(--color-accent-gold)]">
+                        <strong class="text-[var(--color-text-main)]">Huestis, M. A. (2007).</strong> <em>Human Cannabinoid Pharmacokinetics</em>. Chemistry & Biodiversity. (Explica la paliza metabólica del hígado y el 11-OH-THC).
                     </li>
-                    <li class="pl-3 border-l border-[#C2A878]">
-                        <strong class="text-[#1E2B22]">Wang, M., et al. (2016).</strong> <em>Decarboxylation Study of Acidic Cannabinoids...</em> Cannabis and Cannabinoid Research. (Valida la regla de oro de los 110°C pa' despertar la flor).
+                    <li class="pl-3 border-l border-[var(--color-accent-gold)]">
+                        <strong class="text-[var(--color-text-main)]">Wang, M., et al. (2016).</strong> <em>Decarboxylation Study of Acidic Cannabinoids...</em> Cannabis and Cannabinoid Research. (Valida la regla de oro de los 110°C pa' despertar la flor).
                     </li>
-                    <li class="pl-3 border-l border-[#C2A878]">
-                        <strong class="text-[#1E2B22]">Zuurman, L., et al. (2008).</strong> <em>Effect of intrapulmonary, oral, and sublingual administration...</em> Clinical Pharmacology. (Fundamenta la pesadez del CBN del yuyo ya vapeado).
+                    <li class="pl-3 border-l border-[var(--color-accent-gold)]">
+                        <strong class="text-[var(--color-text-main)]">Zuurman, L., et al. (2008).</strong> <em>Effect of intrapulmonary, oral, and sublingual administration...</em> Clinical Pharmacology. (Fundamenta la pesadez del CBN del yuyo ya vapeado).
                     </li>
                 </ul>
             </div>
 
             <div class="text-center mt-6 pb-2 opacity-50">
-                <p class="text-[10px] uppercase tracking-widest">MVD • URUGUAY • 2026</p>
+                <p class="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)]">MVD • URUGUAY • 2026</p>
             </div>
         </section>
 
@@ -543,25 +598,53 @@
 
     <!-- BOTTOM NAVIGATION (App Style) -->
     <nav class="bottom-nav w-full shrink-0 flex justify-around items-center px-2 py-2 pb-4 z-20">
-        <button class="nav-item active flex flex-col items-center gap-1 w-1/4 pt-1 idx-btn" data-target="0">
-            <div class="icon-bg w-10 h-8 rounded-full flex items-center justify-center text-xl bg-[#C2A878] text-white shadow-sm">⚖️</div>
+        <button class="nav-item active flex flex-col items-center gap-1 w-1/4 pt-1" data-target="0">
+            <div class="icon-bg w-10 h-8 rounded-full flex items-center justify-center text-xl bg-[var(--color-accent-gold)] text-[#1E2B22] shadow-sm">⚖️</div>
             <span class="text-[10px] font-semibold tracking-wide mt-0.5">Alambique</span>
         </button>
-        <button class="nav-item flex flex-col items-center gap-1 w-1/4 pt-1 idx-btn" data-target="1">
-            <div class="icon-bg w-10 h-8 rounded-full flex items-center justify-center text-xl text-[#5A665A]">🧉</div>
+        <button class="nav-item flex flex-col items-center gap-1 w-1/4 pt-1" data-target="1">
+            <div class="icon-bg w-10 h-8 rounded-full flex items-center justify-center text-xl text-[var(--color-text-muted)]">🧉</div>
             <span class="text-[10px] font-semibold tracking-wide mt-0.5">El Fogón</span>
         </button>
-        <button class="nav-item flex flex-col items-center gap-1 w-1/4 pt-1 idx-btn" data-target="2">
-            <div class="icon-bg w-10 h-8 rounded-full flex items-center justify-center text-xl text-[#5A665A]">🌿</div>
+        <button class="nav-item flex flex-col items-center gap-1 w-1/4 pt-1" data-target="2">
+            <div class="icon-bg w-10 h-8 rounded-full flex items-center justify-center text-xl text-[var(--color-text-muted)]">🌿</div>
             <span class="text-[10px] font-semibold tracking-wide mt-0.5">El Saber</span>
         </button>
-        <button class="nav-item flex flex-col items-center gap-1 w-1/4 pt-1 idx-btn" data-target="3">
-            <div class="icon-bg w-10 h-8 rounded-full flex items-center justify-center text-xl text-[#5A665A]">📜</div>
+        <button class="nav-item flex flex-col items-center gap-1 w-1/4 pt-1" data-target="3">
+            <div class="icon-bg w-10 h-8 rounded-full flex items-center justify-center text-xl text-[var(--color-text-muted)]">📜</div>
             <span class="text-[10px] font-semibold tracking-wide mt-0.5">Lore</span>
         </button>
     </nav>
 
     <script>
+        /* -----------------------------------------------------------------
+           LÓGICA DEL TEMA (DARK / LIGHT MODE)
+        ----------------------------------------------------------------- */
+        const themeBtn = document.getElementById('themeToggle');
+        const htmlTag = document.documentElement;
+
+        // El tema se carga inicialmente en el <head> para evitar parpadeos
+        function updateThemeIcon() {
+            if (htmlTag.classList.contains('light-theme')) {
+                themeBtn.textContent = '🌙';
+            } else {
+                themeBtn.textContent = '☀️';
+            }
+        }
+        
+        updateThemeIcon();
+
+        themeBtn.addEventListener('click', () => {
+            if (htmlTag.classList.contains('light-theme')) {
+                htmlTag.classList.remove('light-theme');
+                localStorage.setItem('alambique_theme', 'dark');
+            } else {
+                htmlTag.classList.add('light-theme');
+                localStorage.setItem('alambique_theme', 'light');
+            }
+            updateThemeIcon();
+        });
+
         /* -----------------------------------------------------------------
            LÓGICA DE NAVEGACIÓN (TABS Y SWIPE)
         ----------------------------------------------------------------- */
@@ -578,21 +661,23 @@
             let direction = targetIndex > currentTab ? 'next' : 'prev';
             currentTab = targetIndex;
 
-            // UI Nav Update
+            // Actualizar interfaz de botones de navegación inferor
             navItems.forEach((btn, idx) => {
                 const iconBg = btn.querySelector('.icon-bg');
                 if (idx === currentTab) {
                     btn.classList.add('active');
-                    iconBg.classList.replace('text-[#5A665A]', 'text-white');
-                    iconBg.classList.add('bg-[#C2A878]', 'shadow-sm');
+                    iconBg.classList.replace('text-[var(--color-text-muted)]', 'text-[#1E2B22]');
+                    iconBg.classList.add('bg-[var(--color-accent-gold)]', 'shadow-sm');
                 } else {
                     btn.classList.remove('active');
-                    iconBg.classList.replace('text-white', 'text-[#5A665A]');
-                    iconBg.classList.remove('bg-[#C2A878]', 'shadow-sm');
+                    // Reset class para textos por si venía de un color estático
+                    iconBg.classList.remove('text-[#1E2B22]', 'text-white');
+                    iconBg.classList.add('text-[var(--color-text-muted)]');
+                    iconBg.classList.remove('bg-[var(--color-accent-gold)]', 'shadow-sm');
                 }
             });
 
-            // View Animations
+            // Animar Vistas
             views.forEach((view, index) => {
                 view.classList.remove('active', 'from-left', 'from-right');
                 
@@ -614,7 +699,7 @@
             setTimeout(() => { isAnimating = false; }, 400);
         }
 
-        // Event listener for external buttons to go to specific tabs
+        // Botón principal de la máquina
         const btnGoToRecipe = document.getElementById('btnGoToRecipe');
         if (btnGoToRecipe) {
             btnGoToRecipe.addEventListener('click', () => {
@@ -622,13 +707,14 @@
             });
         }
 
+        // Clics en la barra inferior
         navItems.forEach((btn) => {
             btn.addEventListener('click', () => {
                 switchTab(parseInt(btn.dataset.target));
             });
         });
 
-        // Swipe Logic
+        // Lógica de Swipe táctil
         let touchStartX = 0;
         let touchStartY = 0;
         const swipeZone = document.getElementById('swipe-zone');
@@ -718,7 +804,7 @@
             let avb = parseFloat(inputAvb.value);
             if(isNaN(avb) || avb < 0) { avb = 0; inputAvb.value = 0; }
             
-            // INTELIGENCIA DE DETECCIÓN POR PROPORCIÓN
+            // Inteligencia de proporción
             if (autoMatchProfile) {
                 let matchedProfile = 'custom';
                 const totalMateria = flor + avb;
@@ -739,10 +825,9 @@
                 }
             }
 
-            // --- FÓRMULAS FARMACOCINÉTICAS ---
+            // Fórmulas
             const ghee = Math.round((flor * 15) + (avb * 9.375));
             const yieldGhee = Math.round(ghee * 0.86);
-            
             const cuadros = Math.round((flor * 4) + (avb * 2.5)) || 1;
             
             const mgFlor = (flor * 1000) * (thc / 100) * 0.75;
@@ -754,13 +839,13 @@
 
             const temp = profiles[activeProfile].temp;
             
-            // Actualizar UI Alambique
+            // UI Alambique
             document.getElementById('res-ghee').textContent = `${ghee}`;
             document.getElementById('res-mg').textContent = `${mgPerCut}`;
             document.getElementById('res-cuadros').textContent = cuadros > 0 ? `${cuadros}` : '0';
             document.getElementById('res-dose').textContent = `${profileNames[activeProfile]} - ${getDoseCategory(mgPerCut)}`;
             
-            // Actualizar UI El Fogón
+            // UI Fogón
             document.getElementById('dyn-flor').textContent = flor;
             document.getElementById('dyn-temp').textContent = temp;
             document.getElementById('dyn-ghee').textContent = ghee;
@@ -769,7 +854,7 @@
             document.getElementById('dyn-cuadros').textContent = cuadros > 0 ? `${cuadros}` : '0';
             document.getElementById('dyn-mg').textContent = mgPerCut;
             
-            // Mensaje del Boticario
+            // Comentario dinámico
             document.getElementById('dyn-message').textContent = profileMessages[activeProfile];
             
             const avbSection = document.getElementById('dyn-avb-section');
@@ -782,11 +867,13 @@
 
             const dynVals = document.querySelectorAll('.dyn-val');
             dynVals.forEach(el => {
+                // Brillo especial dinámico que funciona en dark o light mode
                 el.style.backgroundColor = 'rgba(194, 168, 120, 0.4)';
                 setTimeout(() => { el.style.backgroundColor = 'rgba(194, 168, 120, 0.15)'; }, 300);
             });
         }
 
+        // Clicks en perfiles superiores
         document.querySelectorAll('.calc-profile-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.calc-profile-btn').forEach(b => b.classList.remove('active'));
@@ -824,6 +911,7 @@
             });
         });
 
+        // Inicializar máquina
         updateCalculations(true);
     </script>
 </body>
